@@ -60,7 +60,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = 60*60*hours+60*minute
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = sagenes*3*48*4.445+arshins*48*4.445+vershoks*4.445
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (sagenes*3*48+arshins*48+vershoks)*4.445*0.01
 
 /**
  * Тривиальная
@@ -102,7 +102,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double = initial*(1+percent/100)*(1+percent/100)*(1+percent/100)
+fun accountInThreeYears(initial: Int, percent: Int): Double = initial*(1+percent*0.01)*(1+percent*0.01)*(1+percent*0.01)
 
 /**
  * Простая
