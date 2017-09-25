@@ -4,6 +4,7 @@ package lesson2.task1
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson4.task1.abs
+import java.util.Collections.max
 
 /**
  * Пример
@@ -36,10 +37,10 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    if (age>10 && age<15) return "$age лет"
-    if (age%10==1) return "$age год"
-    if (age%10>1 && age%10<5) return "$age года"
-    if (age%10>4 || age%10==0) return "$age лет"
+    return if (age%100 in 11..14) "$age лет" else
+    if (age%10==1) "$age год" else
+    if (age%10 in 2..4) "$age года"
+    else "$age лет"
 }
 
 
@@ -54,7 +55,7 @@ fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double  {
     val s=v1*t1+v2*t2+v3*t3
-    val v=s/(t1+t2+t3)
+    val v=s/(t1+t2+t3) // Средняя скорость
     return 0.5*s/v
 }
 
@@ -70,9 +71,9 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    if (kingX!=rookX1 && kingX!=rookX2 && kingY!=rookY1 && kingY!=rookY2) return 0
-    if ((kingX==rookX1 || kingX==rookY1) && kingY!=rookX2 && kingY!=rookY2) return 1
-    if (kingX!=rookX1 && kingX!=rookY1 && (kingY==rookX2 || kingY==rookY2)) return 2 else 3
+    return if (kingX!=rookX1 && kingX!=rookX2 && kingY!=rookY1 && kingY!=rookY2) 0 else
+    if ((kingX==rookX1 || kingY==rookY1) && kingX!=rookX2 && kingY!=rookY2) 1 else
+    if (kingX!=rookX1 && kingY!=rookY1 && (kingX==rookX2 || kingY==rookY2)) 2 else 3
 }
 
 /**
@@ -88,9 +89,9 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
-    if (kingX!=rookX && kingY!=rookY && (kingX-bishopX)!=(kingY-bishopY) && (kingX-bishopX)!=-1*(kingY-bishopY)) return 0
-    if ((kingX==rookX || kingY==rookY) && (kingX-bishopX)!=(kingY-bishopY) && (kingX-bishopX)!=-1*(kingY-bishopY)) return 1
-    if (kingX!=rookX && kingY!=rookY && ((kingX-bishopX)==(kingY-bishopY) || (kingX-bishopX)==-1*(kingY-bishopY))) return 2 else 3
+    return if (kingX!=rookX && kingY!=rookY && (kingX-bishopX)!=(kingY-bishopY) && (kingX-bishopX)!=-1*(kingY-bishopY)) 0 else
+    if ((kingX==rookX || kingY==rookY) && (kingX-bishopX)!=(kingY-bishopY) && (kingX-bishopX)!=-1*(kingY-bishopY)) 1 else
+    if (kingX!=rookX && kingY!=rookY && ((kingX-bishopX)==(kingY-bishopY) || (kingX-bishopX)==-1*(kingY-bishopY))) 2 else 3
 }
 
 /**
@@ -102,26 +103,25 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (a>b && a>c) {
+    return if (a>b && a>c) {
         if (a>(b+c)) return -1
         val K=(sqr(b)+sqr(c)-sqr(a))/2*b*c
         if (K==0.0) return 1
         if (K>0 && K<1) return 0
         return 2
-    }
+    } else
     if (b>a && b>c) {
         if (b>(a+c)) return -1
         val K=(sqr(a)+sqr(c)-sqr(b))/2*a*c
         if (K==0.0) return 1
         if (K>0 && K<1) return 0
         return 2
-    }
-    if (c>a && c>b) {
-        if (c>(a+b)) return -1
+    } else
+    {
+        if (c>(a+b)) -1
         val K=(sqr(a)+sqr(b)-sqr(c))/2*a*b
-        if (K==0.0) return 1
-        if (K>0 && K<1) return 0
-        return 2
+        if (K==0.0) 1
+        if (K>0 && K<1) 0 else 2
     }
 }
 
@@ -134,9 +134,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (b>=c && d>=b && c>=a) return b-c
-    if (b>=d && c>=a) return d-c
-    if (b>=d && a>=c && d>=a) return d-a
-    if (a>=c && d>=b) return b-a
+    return if (b>=c && d>=b && c>=a) b-c else
+    if (b>=d && c>=a) d-c else
+    if (b>=d && a>=c && d>=a) d-a else
+    if (a>=c && d>=b) b-a else
     return -1
 }
