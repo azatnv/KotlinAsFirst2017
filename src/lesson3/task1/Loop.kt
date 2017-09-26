@@ -123,9 +123,11 @@ fun minDivisor(n: Int): Int {
  */
 fun maxDivisor(n: Int): Int {
     var k=0
-    for (i in n-1 downTo  2) {
-        if (n%i==0) k=i
-        break
+    for (i in n-1 downTo  1) {
+        if (n%i==0) {
+            k=i
+            break
+        }
     }
     return k
 }
@@ -156,7 +158,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
     var k: Double=0.0
     for (i in m..n) {
         k=i*1.0
-        if (sqr(sqrt(k))==i*1.0) return true // Необходим знак целой части числа, для нахождения ближайшего целого числа к sqrt(k). Я не знаю какой функцией или каким знаком его задать
+        if (sqr (Math.floor(sqrt(k)))==i*1.0) return true
     }
     return false
 }
@@ -193,7 +195,22 @@ fun sin(x: Double, eps: Double): Double {
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var m=0.0
+    var t=1.0
+    var s=2
+    var k=1.0
+    var H=2.0
+    if (abs(eps)>abs(x)) return x
+    do {
+        t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
+        m=pow(x, H)/ factorial(s)* pow(-1.0,k)
+        s += 2
+        H+=+2.0
+        k++
+    } while (abs(m)>=abs(eps))
+    return t
+}
 
 /**
  * Средняя
@@ -201,7 +218,17 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Поменять порядок цифр заданного числа n на обратный: 13478 -> 87431.
  * Не использовать строки при решении задачи.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var n = n
+    var k=0
+    var m=0
+    while (n>0) {
+        m=n%10
+        k=k*10+m
+        n/=10
+    }
+    return k
+}
 
 /**
  * Средняя
@@ -218,11 +245,10 @@ fun isPalindrome(n: Int): Boolean {
         m++
     }
     when {
-        m==1 -> return true
-        n/m*10==n%10 -> isPalindrome(n%10*m/10)
+        m==1 -> return true 15751*
+        n/(m*10)==n%10 -> return isPalindrome(n%(10*m)/10)
         else -> return false
     }
-   return true
 }
 
 /**
@@ -231,7 +257,11 @@ fun isPalindrome(n: Int): Boolean {
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    return if (n<10) false else {
+        if (n % 10 != n / 10 % 10) true else hasDifferentDigits(n / 10)
+    }
+}
 
 /**
  * Сложная
@@ -240,7 +270,7 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int =
+fun squareSequenceDigit(n: Int): Int= TODO()
 
 /**
  * Сложная
