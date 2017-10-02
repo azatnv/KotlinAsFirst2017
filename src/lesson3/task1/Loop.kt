@@ -3,8 +3,6 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import java.lang.Math.*
-import java.util.Collections.max
-import java.util.Collections.min
 
 /**
  * Пример
@@ -96,8 +94,10 @@ fun lcm(m: Int, n: Int): Int {
     var k= maxOf(m, n)
     var nok=0
     for (i in  k..m*n) {
-        if (i%m==0 && i%n==0) nok=i
-        break
+        if (i%m==0 && i%n==0) {
+            nok=i
+            break
+        }
     }
     return nok
 }
@@ -177,13 +177,13 @@ fun sin(x: Double, eps: Double): Double {
     var k=2.0
     var H=1.0
     if (abs(eps)>abs(x)) return x
-    do {
+    while (abs(m)>=abs(eps)) {
         t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
         m=pow(x, H)/ factorial(s)* pow(-1.0,k)
         s += 2
         H+=+2.0
         k++
-    } while (abs(m)>=abs(eps))
+    }
     return t
 }
 
@@ -219,13 +219,13 @@ fun cos(x: Double, eps: Double): Double {
  * Не использовать строки при решении задачи.
  */
 fun revert(n: Int): Int {
-    var n = n
+    var t = n
     var k=0
     var m=0
-    while (n>0) {
-        m=n%10
+    while (t>0) {
+        m=t%10
         k=k*10+m
-        n/=10
+        t/=10
     }
     return k
 }
@@ -238,17 +238,15 @@ fun revert(n: Int): Int {
  * 15751 -- палиндром, 3653 -- нет.
  */
 fun isPalindrome(n: Int): Boolean {
+    var t = n
+    var k=0
     var m=0
-    var i=n
-    while (i>0) {
-        i /= 10
-        m++
+    while (t>0) {
+        m=t%10
+        k=k*10+m
+        t/=10
     }
-    when {
-        m==1 -> return true 15751*
-        n/(m*10)==n%10 -> return isPalindrome(n%(10*m)/10)
-        else -> return false
-    }
+    return k==n
 }
 
 /**
@@ -263,6 +261,8 @@ fun hasDifferentDigits(n: Int): Boolean {
     }
 }
 
+fun sqr(x: Int) = x * x
+
 /**
  * Сложная
  *
@@ -270,7 +270,35 @@ fun hasDifferentDigits(n: Int): Boolean {
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int= TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var k=0
+    var t=0
+    var m=0
+    var c=0
+    var r=0
+    loop@ for (i in 1..n) {
+        k=sqr(i)
+        t=k
+        while (k>0) {
+            m++
+            k/=10
+        }
+        c=c+m
+        when {
+            (c<n) -> continue@loop
+            (c<=n) -> {
+                while (c!=n) {
+                    t/=10
+                    c--
+                }
+                r=t%10
+                return (r)
+                break@loop
+            }
+        }
+    }
+ return r
+}
 
 /**
  * Сложная
