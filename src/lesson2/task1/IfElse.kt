@@ -52,9 +52,14 @@ fun ageDescription(age: Int): String {
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double  {
-    val s=v1*t1+v2*t2+v3*t3
-    val v=s/(t1+t2+t3) // Средняя скорость
-    return 0.5*s/v
+    var s=v1*t1+v2*t2+v3*t3
+    val s1=t1*v1
+    val s2=t2*v2
+    return when {
+        s1>=s/2 -> s/2/s1
+        (s1+s2)>=s/2 -> t1+(s/2-s1)/t2
+        else -> t1+t2+(s/2-s1-s2)/t3
+    }
 }
 
 /**
@@ -132,7 +137,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return if (b>=c && d>=b && c>=a) b-c else
+    return if (b in c..d && c>=a) b-c else
     if (b>=d && c>=a) d-c else
     if (b>=d && a>=c && d>=a) d-a else
     if (a>=c && d>=b) b-a else

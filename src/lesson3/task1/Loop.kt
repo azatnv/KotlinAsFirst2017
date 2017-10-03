@@ -65,7 +65,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count=0
-    var m=n
+    var m: Int=n
     do {
         m=n/10
         count++
@@ -155,7 +155,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var k: Double=0.0
+    var k=0.0
     for (i in m..n) {
         k=i*1.0
         if (sqr (Math.floor(sqrt(k)))==i*1.0) return true
@@ -271,8 +271,8 @@ fun sqr(x: Int) = x * x
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var k=0
-    var t=0
+    var k: Int
+    var t: Int
     var m=0
     var c=0
     var r=0
@@ -307,4 +307,37 @@ fun squareSequenceDigit(n: Int): Int {
  * 1123581321345589144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var k: Int
+    var t: Int
+    var m=0 // количество цифр в следующем числе
+    var c=2 // счетчик всего кол-ва цифр
+    var r=0 // результат
+    if (n==1 || n==2) return 1
+    var f1=1
+    var f2=1
+    loop@ for (i in 3..n) {
+        k=f1+f2
+        f1=f2
+        f2=k
+        t=k
+        while (k>0) {
+            m++
+            k/=10
+        }
+        c+=m
+        when {
+            (c<n) -> continue@loop
+            (c<=n) -> {
+                while (c!=n) {
+                    t/=10
+                    c--
+                }
+                r=t%10
+                return (r)
+                break@loop
+            }
+        }
+    }
+    return r
+}
