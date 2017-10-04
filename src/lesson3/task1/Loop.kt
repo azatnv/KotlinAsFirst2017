@@ -65,9 +65,9 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count=0
-    var m: Int=n
+    var m=abs(n)
     do {
-        m=n/10
+        m/=10
         count++
     } while (m>0)
     return count
@@ -110,8 +110,10 @@ fun lcm(m: Int, n: Int): Int {
 fun minDivisor(n: Int): Int {
     var k=0
     for (i in 2..n) {
-        if (n%i==0) k=i
-        break
+        if (n%i==0) {
+            k=i
+            break
+        }
     }
     return k
 }
@@ -155,10 +157,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var k=0.0
     for (i in m..n) {
-        k=i*1.0
-        if (sqr (Math.floor(sqrt(k)))==i*1.0) return true
+        if (sqr (Math.floor(sqrt(i*1.0)))==i*1.0) return true
     }
     return false
 }
@@ -181,7 +181,7 @@ fun sin(x: Double, eps: Double): Double {
         t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
         m=pow(x, H)/ factorial(s)* pow(-1.0,k)
         s += 2
-        H+=+2.0
+        H+=2.0
         k++
     }
     return t
@@ -206,7 +206,7 @@ fun cos(x: Double, eps: Double): Double {
         t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
         m=pow(x, H)/ factorial(s)* pow(-1.0,k)
         s += 2
-        H+=+2.0
+        H+=2.0
         k++
     } while (abs(m)>=abs(eps))
     return t
@@ -237,17 +237,9 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean {
-    var t = n
-    var k=0
-    var m=0
-    while (t>0) {
-        m=t%10
-        k=k*10+m
-        t/=10
-    }
-    return k==n
-}
+fun isPalindrome(n: Int): Boolean =
+        revert(n)==n
+
 
 /**
  * Средняя
@@ -257,11 +249,10 @@ fun isPalindrome(n: Int): Boolean {
  */
 fun hasDifferentDigits(n: Int): Boolean {
     return if (n<10) false else {
-        if (n % 10 != n / 10 % 10) true else hasDifferentDigits(n / 10)
+        if (n%10!=n/10%10) true else hasDifferentDigits(n/10)
     }
 }
 
-fun sqr(x: Int) = x * x
 
 /**
  * Сложная
@@ -270,35 +261,7 @@ fun sqr(x: Int) = x * x
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var k: Int
-    var t: Int
-    var m=0
-    var c=0
-    var r=0
-    loop@ for (i in 1..n) {
-        k=sqr(i)
-        t=k
-        while (k>0) {
-            m++
-            k/=10
-        }
-        c=c+m
-        when {
-            (c<n) -> continue@loop
-            (c<=n) -> {
-                while (c!=n) {
-                    t/=10
-                    c--
-                }
-                r=t%10
-                return (r)
-                break@loop
-            }
-        }
-    }
- return r
-}
+fun squareSequenceDigit(n: Int): Int = TODO()
 
 /**
  * Сложная
@@ -307,37 +270,4 @@ fun squareSequenceDigit(n: Int): Int {
  * 1123581321345589144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var k: Int
-    var t: Int
-    var m=0 // количество цифр в следующем числе
-    var c=2 // счетчик всего кол-ва цифр
-    var r=0 // результат
-    if (n==1 || n==2) return 1
-    var f1=1
-    var f2=1
-    loop@ for (i in 3..n) {
-        k=f1+f2
-        f1=f2
-        f2=k
-        t=k
-        while (k>0) {
-            m++
-            k/=10
-        }
-        c+=m
-        when {
-            (c<n) -> continue@loop
-            (c<=n) -> {
-                while (c!=n) {
-                    t/=10
-                    c--
-                }
-                r=t%10
-                return (r)
-                break@loop
-            }
-        }
-    }
-    return r
-}
+fun fibSequenceDigit(n: Int): Int = TODO()

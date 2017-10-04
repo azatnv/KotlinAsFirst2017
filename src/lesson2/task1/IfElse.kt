@@ -34,11 +34,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    return if (age%100 in 11..14) "$age лет" else
-    if (age%10==1) "$age год" else
-    if (age%10 in 2..4) "$age года"
-    else "$age лет"
+fun ageDescription(age: Int): String = when {
+    age%100 in 11..14 -> "$age лет"
+    age%10==1 -> "$age год"
+    age%10 in 2..4 -> "$age года"
+    else -> "$age лет"
 }
 
 
@@ -74,9 +74,16 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    return if (kingX!=rookX1 && kingX!=rookX2 && kingY!=rookY1 && kingY!=rookY2) 0 else
-    if ((kingX==rookX1 || kingY==rookY1) && kingX!=rookX2 && kingY!=rookY2) 1 else
-    if (kingX!=rookX1 && kingY!=rookY1 && (kingX==rookX2 || kingY==rookY2)) 2 else 3
+    val x1: Boolean=kingX==rookX1
+    val x2: Boolean=kingX==rookX2
+    val y1: Boolean=kingY==rookY1
+    val y2: Boolean=kingY==rookY2
+    return when {
+        !x1 && !x2 && !y1 && !y2 -> 0
+        (x1 || y1) && !x2 && !y2 -> 1
+        !x1 && !y1 && (x2 || y2) -> 2
+        else -> 3
+    }
 }
 
 /**
@@ -92,9 +99,16 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
-    return if (kingX!=rookX && kingY!=rookY && (kingX-bishopX)!=(kingY-bishopY) && (kingX-bishopX)!=-1*(kingY-bishopY)) 0 else
-    if ((kingX==rookX || kingY==rookY) && (kingX-bishopX)!=(kingY-bishopY) && (kingX-bishopX)!=-1*(kingY-bishopY)) 1 else
-    if (kingX!=rookX && kingY!=rookY && ((kingX-bishopX)==(kingY-bishopY) || (kingX-bishopX)==-1*(kingY-bishopY))) 2 else 3
+    val x: Boolean=kingX==rookX
+    val y: Boolean=kingY==rookY
+    val b1: Boolean=(kingX-bishopX)==(kingY-bishopY)
+    val b2: Boolean=(kingX-bishopX)==-1*(kingY-bishopY)
+    return when {
+        !x && !y && !b1 && !b2 -> 0
+        (x || y) && !b1 && !b2 -> 1
+        !x && !y && (b1 || b2) -> 2
+        else -> 3
+    }
 }
 
 /**
@@ -105,28 +119,19 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int {
-    return if (a>b && a>c) {
-        if (a>(b+c)) return -1
-        val K=(sqr(b)+sqr(c)-sqr(a))/2*b*c
-        if (K==0.0) return 1
-        if (K>0 && K<1) return 0
-        return 2
-    } else
-    if (b>a && b>c) {
-        if (b>(a+c)) return -1
-        val K=(sqr(a)+sqr(c)-sqr(b))/2*a*c
-        if (K==0.0) return 1
-        if (K>0 && K<1) return 0
-        return 2
-    } else
-    {
-        if (c>(a+b)) -1
-        val K=(sqr(a)+sqr(b)-sqr(c))/2*a*b
-        if (K==0.0) 1
-        if (K>0 && K<1) 0 else 2
-    }
+fun f123triangleKind(a: Double, b: Double, c: Double): Int {
+    if (a>(b+c)) return -1
+    val K=(sqr(b)+sqr(c)-sqr(a))/2*b*c
+    if (K==0.0) return 1
+    if (K>0 && K<1) return 0
+    return 2
 }
+fun triangleKind(a: Double, b: Double, c: Double): Int = when {
+        a>b && a>c -> f123triangleKind(a, b, c)
+        b>a && b>c -> f123triangleKind(b, a, c)
+        else -> f123triangleKind(c, a, b)
+}
+
 
 /**
  * Средняя

@@ -19,9 +19,9 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean {
-    val m=number/1000+number/100%10
-    val n=number/10%10+number%10
-    return (m==n)
+    val sum12=number/1000+number/100%10
+    val sum34=number/10%10+number%10
+    return sum12==sum34
 }
 
 /**
@@ -31,7 +31,8 @@ fun isNumberHappy(number: Int): Boolean {
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = (x1==x2 || y1==y2 || (x1-x2)*(x1-x2)==(y1-y2)*(y1-y2))
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
+        x1==x2 || y1==y2 || (x1-x2)*(x1-x2)==(y1-y2)*(y1-y2)
 
 
 /**
@@ -54,50 +55,23 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    return if (a>b && a>c) {
-        if (b>c) {
-            if(r>s) {
-                if (r>=b && s>=c) return true else false
-            } else {
-                if (s>=b && r>=c) return true else false
-            }
+fun f123brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    return if (b>c) {
+        if(r>s) {
+            if (r>=b && s>=c) true else false
         } else {
-            if(r<s) {
-                if (r>=b && s>=c) return true else false
-            } else {
-                if (s>=b && r>=c) return true else false
-            }
+            if (s>=b && r>=c) true else false
         }
-    } else
-    if (b>a && b>c) {
-        if (a>c) {
-            if(r>s) {
-                if (r>=a && s>=c) return true else false
-            } else {
-                if (s>=a && r>=c) return true else false
-            }
+    } else {
+        if(r<s) {
+            if (r>=b && s>=c) true else false
         } else {
-            if(r<s) {
-                if (r>=a && s>=c) return true else false
-            } else {
-                if (s>=a && r>=c) return true else false
-            }
-        }
-    } else
-    {
-        if (a>b) {
-            if(r>s) {
-                if (r>=a && s>=b) return true else false
-            } else {
-                if (s>=a && r>=b) return true else false
-            }
-        } else {
-            if(r<s) {
-                if (r>=a && s>=b) return true else false
-            } else {
-                if (s>=a && r>=b) return true else false
-            }
+            if (s>=b && r>=c) true else false
         }
     }
+}
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = when {
+        a>b && a>c ->  f123brickPasses(a, b, c, r, s)
+        b>a && b>c ->  f123brickPasses(b, a, c, r, s)
+        else ->  f123brickPasses(c, a, b, r, s)
 }
