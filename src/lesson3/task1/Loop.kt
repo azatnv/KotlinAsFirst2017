@@ -171,19 +171,19 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var m=0.0
-    var t=0.0
-    var s=1
-    var k=2.0
-    var H=1.0
+    var m=0.0 // последий/очеередной "член ряда" (как я понял это слагаемое, которое мы прибавляем к sin(x) и сравниваем его модуль с eps)
+    var t=0.0 // - это sin(x)
+    var s=1 // аргумент факториала
+    var k=2.0 // степень (-1)^k
+    var H=1.0 // степенгь x^H
     if (abs(eps)>abs(x)) return x
-    while (abs(m)>=abs(eps)) {
+    do {
         t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
         m=pow(x, H)/ factorial(s)* pow(-1.0,k)
-        s += 2
+        s+=2
         H+=2.0
         k++
-    }
+    } while (abs(m)>=abs(eps))
     return t
 }
 
@@ -196,16 +196,16 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
-    var m=0.0
-    var t=1.0
-    var s=2
-    var k=1.0
-    var H=2.0
+    var m=0.0 // "очередной член ряда"
+    var t=1.0 // =cos(x)
+    var s=2 // факториал
+    var k=1.0 // (-1)^k
+    var H=2.0 //  x^H
     if (abs(eps)>abs(x)) return x
     do {
         t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
         m=pow(x, H)/ factorial(s)* pow(-1.0,k)
-        s += 2
+        s+=2
         H+=2.0
         k++
     } while (abs(m)>=abs(eps))
@@ -261,7 +261,28 @@ fun hasDifferentDigits(n: Int): Boolean {
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var a=n
+    var k=1
+    var p: Int
+    var w=1
+    while (k<a) {
+        a+=-k
+        w+=1
+        p=w*w
+        k=0
+        while (p>0){
+            k+=1
+            p/=10 }
+
+    }
+    p=w*w
+    while (k>a) {
+        p/=10
+        k+=-1
+    }
+    return p%10
+}
 
 /**
  * Сложная
@@ -270,4 +291,27 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  * 1123581321345589144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var a=n
+    var k=1
+    var p: Int
+    var f=0
+    var f1=1
+    while (k<a) {
+        a+=-k
+        p=f+f1
+        f=f1
+        f1+=1
+        k=0
+        while (p>0){
+            k+=1
+            p/=10 }
+
+    }
+    p=f+f1
+    while (k>a) {
+        p/=10
+        k+=-1
+    }
+    return p%10
+}

@@ -56,9 +56,9 @@ fun timeForHalfWay(t1: Double, v1: Double,
     val s1=t1*v1
     val s2=t2*v2
     return when {
-        s1>=s/2 -> s/2/s1
-        (s1+s2)>=s/2 -> t1+(s/2-s1)/t2
-        else -> t1+t2+(s/2-s1-s2)/t3
+        s1>=s/2 -> s/2/v1
+        (s1+s2)>=s/2 -> t1+(s/2-s1)/v2
+        else -> t1+t2+(s/2-s1-s2)/v3
     }
 }
 
@@ -120,15 +120,15 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun f123triangleKind(a: Double, b: Double, c: Double): Int {
-    if (a>(b+c)) return -1
+    if (a>=(b+c)) return -1
     val K=(sqr(b)+sqr(c)-sqr(a))/2*b*c
     if (K==0.0) return 1
     if (K>0 && K<1) return 0
     return 2
 }
 fun triangleKind(a: Double, b: Double, c: Double): Int = when {
-        a>b && a>c -> f123triangleKind(a, b, c)
-        b>a && b>c -> f123triangleKind(b, a, c)
+        a>=b && a>=c -> f123triangleKind(a, b, c)
+        b>=a && b>=c -> f123triangleKind(b, a, c)
         else -> f123triangleKind(c, a, b)
 }
 
