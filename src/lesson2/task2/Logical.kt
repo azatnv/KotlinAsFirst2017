@@ -56,14 +56,14 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun f123brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    return if (b>c) {
-        if(r>s) {
+    return if (b>=c) {
+        if(r>=s) {
             if (r>=b && s>=c) true else false
         } else {
             if (s>=b && r>=c) true else false
         }
     } else {
-        if(r<s) {
+        if(r<=s) {
             if (r>=b && s>=c) true else false
         } else {
             if (s>=b && r>=c) true else false
@@ -71,7 +71,7 @@ fun f123brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     }
 }
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = when {
-        a>b && a>c ->  f123brickPasses(a, b, c, r, s)
-        b>a && b>c ->  f123brickPasses(b, a, c, r, s)
+        a>=b && a>=c ->  f123brickPasses(a, b, c, r, s)
+        b>=a && b>=c ->  f123brickPasses(b, a, c, r, s)
         else ->  f123brickPasses(c, a, b, r, s)
 }

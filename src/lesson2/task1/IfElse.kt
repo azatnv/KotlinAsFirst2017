@@ -123,7 +123,7 @@ fun f123triangleKind(a: Double, b: Double, c: Double): Int {
     if (a>=(b+c)) return -1
     val K=(sqr(b)+sqr(c)-sqr(a))/2*b*c
     if (K==0.0) return 1
-    if (K>0 && K<1) return 0
+    if (K>0.0 && K<1.0) return 0
     return 2
 }
 fun triangleKind(a: Double, b: Double, c: Double): Int = when {
