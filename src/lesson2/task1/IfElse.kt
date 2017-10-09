@@ -74,10 +74,10 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    val x1: Boolean=kingX==rookX1
-    val x2: Boolean=kingX==rookX2
-    val y1: Boolean=kingY==rookY1
-    val y2: Boolean=kingY==rookY2
+    val x1=kingX==rookX1
+    val x2=kingX==rookX2
+    val y1=kingY==rookY1
+    val y2=kingY==rookY2
     return when {
         !x1 && !x2 && !y1 && !y2 -> 0
         (x1 || y1) && !x2 && !y2 -> 1
@@ -99,10 +99,10 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
-    val x: Boolean=kingX==rookX
-    val y: Boolean=kingY==rookY
-    val b1: Boolean=(kingX-bishopX)==(kingY-bishopY)
-    val b2: Boolean=(kingX-bishopX)==-1*(kingY-bishopY)
+    val x=kingX==rookX
+    val y=kingY==rookY
+    val b1=(kingX-bishopX)==(kingY-bishopY)
+    val b2=(kingX-bishopX)==-1*(kingY-bishopY)
     return when {
         !x && !y && !b1 && !b2 -> 0
         (x || y) && !b1 && !b2 -> 1
@@ -119,17 +119,17 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun f123triangleKind(a: Double, b: Double, c: Double): Int {
+fun triangleKindHelper(a: Double, b: Double, c: Double): Int {
     if (a>=(b+c)) return -1
-    val K=(sqr(b)+sqr(c)-sqr(a))/2*b*c
-    if (K==0.0) return 1
-    if (K>0.0 && K<1.0) return 0
+    val cos=(sqr(b)+sqr(c)-sqr(a))/2*b*c
+    if (cos==0.0) return 1
+    if (cos>0.0 && cos<1.0) return 0
     return 2
 }
 fun triangleKind(a: Double, b: Double, c: Double): Int = when {
-        a>=b && a>=c -> f123triangleKind(a, b, c)
-        b>=a && b>=c -> f123triangleKind(b, a, c)
-        else -> f123triangleKind(c, a, b)
+        a>=b && a>=c -> triangleKindHelper(a, b, c)
+        b>=a && b>=c -> triangleKindHelper(b, a, c)
+        else -> triangleKindHelper(c, a, b)
 }
 
 

@@ -158,7 +158,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     for (i in m..n) {
-        if (sqr (Math.floor(sqrt(i*1.0)))==i*1.0) return true
+        if (sqrt(i*1.0)%1.0==0.0) return true
     }
     return false
 }
@@ -247,11 +247,10 @@ fun isPalindrome(n: Int): Boolean =
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean {
-    return if (n<10) false else {
+fun hasDifferentDigits(n: Int): Boolean = if (n<10) false else {
         if (n%10!=n/10%10) true else hasDifferentDigits(n/10)
-    }
 }
+
 
 
 /**
@@ -263,25 +262,21 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun squareSequenceDigit(n: Int): Int {
     var a=n
-    var k=1
-    var p: Int
-    var w=1
-    while (k<a) {
-        a+=-k
-        w+=1
-        p=w*w
-        k=0
-        while (p>0){
-            k+=1
-            p/=10 }
-
+    var count=1
+    var result: Int
+    var kvadrat=1
+    while (count<a) {
+        a+=-count
+        kvadrat+=1
+        result=kvadrat*kvadrat
+        count=digitNumber(result)
     }
-    p=w*w
-    while (k>a) {
-        p/=10
-        k+=-1
+    result=kvadrat*kvadrat
+    while (count>a) {
+        result/=10
+        count+=-1
     }
-    return p%10
+    return result%10
 }
 
 /**
@@ -293,26 +288,22 @@ fun squareSequenceDigit(n: Int): Int {
  */
 fun fibSequenceDigit(n: Int): Int {
     var a=n-1
-    var k=1
-    var p: Int
-    var f=1
-    var f1=1
+    var count=1
+    var result: Int
+    var fib1=1
+    var fib2=1
     if (n==1) return 1
-    while (k<a) {
-        a+=-k
-        f+=f1
-        f1=f-f1
-        p=f
-        k=0
-        while (p>0){
-            k+=1
-            p/=10 }
-
+    while (count<a) {
+        a+=-count
+        fib1+=fib2
+        fib2=fib1-fib2
+        result=fib1
+        count=digitNumber(result)
     }
-    p=f
-    while (k>a) {
-        p/=10
-        k+=-1
+    result=fib1
+    while (count>a) {
+        result/=10
+        count+=-1
     }
-    return p%10
+    return result%10
 }

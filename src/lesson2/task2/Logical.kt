@@ -55,23 +55,23 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun f123brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+fun brickPassesHelper(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     return if (b>=c) {
         if(r>=s) {
-            if (r>=b && s>=c) true else false
+            r>=b && s>=c
         } else {
-            if (s>=b && r>=c) true else false
+            s>=b && r>=c
         }
     } else {
         if(r<=s) {
-            if (r>=b && s>=c) true else false
+            r>=b && s>=c
         } else {
-            if (s>=b && r>=c) true else false
+            s>=b && r>=c
         }
     }
 }
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = when {
-        a>=b && a>=c ->  f123brickPasses(a, b, c, r, s)
-        b>=a && b>=c ->  f123brickPasses(b, a, c, r, s)
-        else ->  f123brickPasses(c, a, b, r, s)
+        a>=b && a>=c ->  brickPassesHelper(a, b, c, r, s)
+        b>=a && b>=c ->  brickPassesHelper(b, a, c, r, s)
+        else ->  brickPassesHelper(c, a, b, r, s)
 }
