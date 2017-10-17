@@ -91,15 +91,19 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k= maxOf(m, n)
-    var nok=0
-    for (i in  k..m*n) {
-        if (i%m==0 && i%n==0) {
-            nok=i
-            break
+    var a=m
+    var b=n
+    var nod=max(m,n)
+    while (a!=b) {
+        if (a > b) {
+            a-=b
+            nod=a
+        } else {
+            b-=a
+            nod=b
         }
     }
-    return nok
+    return m*n/nod
 }
 
 /**
@@ -172,19 +176,19 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var m=0.0 // последий/очеередной "член ряда" (как я понял это слагаемое, которое мы прибавляем к sin(x) и сравниваем его модуль с eps)
-    var t=0.0 // - это sin(x)
-    var s=1 // аргумент факториала
-    var k=2.0 // степень (-1)^k
-    var H=1.0 // степенгь x^H
+    var result=0.0 // - это sin(x)
+    var f=1 // аргумент факториала
+    var pow1=2.0 // степень (-1)^pow1
+    var powX=1.0 // степенгь x^powX
     if (abs(eps)>abs(x)) return x
     do {
-        t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
-        m=pow(x, H)/ factorial(s)* pow(-1.0,k)
-        s+=2
-        H+=2.0
-        k++
+        result+=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
+        m=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
+        f+=2
+        powX+=2.0
+        pow1++
     } while (abs(m)>=abs(eps))
-    return t
+    return result
 }
 
 
@@ -197,19 +201,19 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var m=0.0 // "очередной член ряда"
-    var t=1.0 // =cos(x)
-    var s=2 // факториал
-    var k=1.0 // (-1)^k
-    var H=2.0 //  x^H
+    var result=1.0 // =cos(x)
+    var f=2 // факториал
+    var pow1=1.0 // (-1)^pow1
+    var powX=2.0 //  x^powX
     if (abs(eps)>abs(x)) return x
     do {
-        t+=pow(x, H)/ factorial(s)* pow(-1.0,k)
-        m=pow(x, H)/ factorial(s)* pow(-1.0,k)
-        s+=2
-        H+=2.0
-        k++
+        result+=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
+        m=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
+        f+=2
+        powX+=2.0
+        pow1++
     } while (abs(m)>=abs(eps))
-    return t
+    return result
 }
 
 /**
@@ -247,10 +251,11 @@ fun isPalindrome(n: Int): Boolean =
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean = if (n<10) false else {
-        if (n%10!=n/10%10) true else hasDifferentDigits(n/10)
+fun hasDifferentDigits(n: Int): Boolean = when {
+    (n<10) -> false
+    (n%10!=n/10%10)-> true
+    else -> hasDifferentDigits(n/10)
 }
-
 
 
 /**
@@ -264,14 +269,14 @@ fun squareSequenceDigit(n: Int): Int {
     var a=n
     var count=1
     var result: Int
-    var kvadrat=1
+    var sqr=1
     while (count<a) {
         a+=-count
-        kvadrat+=1
-        result=kvadrat*kvadrat
+        sqr+=1
+        result=sqr*sqr
         count=digitNumber(result)
     }
-    result=kvadrat*kvadrat
+    result=sqr*sqr
     while (count>a) {
         result/=10
         count+=-1

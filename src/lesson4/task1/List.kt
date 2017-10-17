@@ -111,7 +111,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
 fun abs(v: List<Double>): Double = when {
     v.isEmpty() -> 0.0
     else -> {
-        var kvadrat=mutableListOf<Double>()
+        val kvadrat=mutableListOf<Double>()
         for (i in v) {
             kvadrat.add(i*i)
         }
@@ -206,7 +206,22 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var result=mutableListOf<Int>()
+    var a=n
+    while (a!=1) {
+        for (i in 2..n) {
+            if (n % i == 0) {
+                while (a % i == 0) {
+                    result.add(i)
+                    a/=i
+                }
+            }
+        }
+    }
+    return if (result.size==0) listOf(n) else
+        result
+}
 
 /**
  * Сложная
@@ -215,20 +230,20 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  */
 fun factorizeToString(n: Int): String {
-    var m=mutableListOf<Int>()
+    var result=mutableListOf<Int>()
     var a=n
     while (a!=1) {
         for (i in 2..n) {
             if (n % i == 0) {
                 while (a % i == 0) {
-                    m.add(i)
+                    result.add(i)
                     a/=i
                 }
             }
         }
     }
-    return if (m.size==0) "$n" else
-        m.joinToString(separator="*")
+    return if (result.size==0) "$n" else
+        result.joinToString(separator="*")
 }
 
 /**
@@ -238,7 +253,19 @@ fun factorizeToString(n: Int): String {
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    var result1= mutableListOf<Int>()
+    var mod=0
+    var n=n
+    while (n>0) {
+        mod=n%base
+        result1.add(mod)
+        n/=base
+    }
+    var result2= mutableListOf<Int>()
+    for (i in result1.size-1 downTo 0) result2.add(result1[i])
+    return result2
+}
 
 /**
  * Сложная
@@ -248,7 +275,20 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    var result1= mutableListOf<Int>()
+    var mod=0
+    var n=n
+    while (n>0) {
+        mod=n%base
+        result1.add(mod)
+        n/=base
+    }
+    var result2= mutableListOf<Int>()
+    for (i in result1.size-1 downTo 0) result2.add(result1[i])
+    return result2.joinToString()
+}
+
 
 /**
  * Средняя
