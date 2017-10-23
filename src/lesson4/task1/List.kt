@@ -410,7 +410,7 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    var result= mutableListOf<String>()
+    var result=mutableListOf<String>()
     var n=n
     if (n>=1000) {
         for (i in 1..n/1000) result.add("M")
@@ -480,9 +480,129 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String {
-    var count=0
-    while (n>=1){
+fun word2(n: Int): String = when (n) {
+    1 -> "один"
+    2 -> "два"
+    3 -> "три"
+    4 -> "четыре"
+    5 -> "пять"
+    6 -> "шесть"
+    7 -> "семь"
+    8 -> "восемь"
+    9 -> "девять"
+    10 -> "десять"
+    11 -> "одиннадцать"
+    12 -> "двенадцать"
+    13 -> "тринадцать"
+    14 -> "четырнадцать"
+    15 -> "пятнадцать"
+    16 -> "шестнадцать"
+    17 -> "семнадцать"
+    18 -> "восемнадцать"
+    19 -> "девятнадцать"
+    else  -> " "
+}
 
+fun word1(n: Int, count: Int): String {
+    if (count==1) {
+        return word2(n)
+    }
+    if (count==2) {
+        return when (n) {
+            in 2..3 -> word2(n)+"дцать"
+            4 -> "сорок"
+            in 5..8 -> word2(n)+"десят"
+            9 -> "девяносто"
+            else -> " "
+        }
+    }
+    if (count==3) {
+        return when (n) {
+            1 -> "сто"
+            2 -> "двести"
+            in 3..4 -> word2(n)+"ста"
+            in 5..9 -> word2(n)+"сот"
+            else -> " "
+        }
+    }
+    if (count==4) {
+        return when (n) {
+            1 -> "одна тысяча"
+            2 -> "две тысячи"
+            in 3..4 -> word2(n)+" тысячи"
+            in 5..9 -> word2(n)+" тысяч"
+            else -> " тысяч"
+            }
+    }
+    if (count==5) {
+        return when (n) {
+            in 2..3 -> (word2(n)+"дцать")
+            4 -> "сорок"
+            in 5..8 -> (word2(n)+"десят")
+            9 -> "девяносто"
+            else -> " "
+        }
+    } else {
+        return when (n) {
+            1 -> "сто"
+            2 -> "двести"
+            in 3..4 -> word2(n)+"ста"
+            else -> word2(n)+"сот"
+        }
     }
 }
+
+fun russian(n: Int): String {
+    var count=0
+    var str=mutableListOf<String>()
+    var word=""
+    var symbol=0
+    var n=n
+    if (n%100 in 10..20) {
+        count+=2
+        word=word1(n%100, 1)
+        n/=100
+        str.add(word)
+    }
+    while (n>=1 && count<4){
+        count+=1
+        word= word1(n%10, count)
+        str.add(word)
+        n/=10
+    }
+    if (n%100 in 10..20) {
+        count+=2
+        word=word1(n%100, 1)+"тысяч"
+        n/=100
+        str.add(word)
+    }
+    while (n>=1){
+        count+=1
+        word= word1(n%10, count)
+        str.add(word)
+        n/=10
+    }
+    return str.joinToString(separator="")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
