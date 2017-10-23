@@ -393,7 +393,7 @@ fun decimalFromString(str: String, base: Int): Int {
             '7' -> symbol=7
             '8' -> symbol=8
             '9' -> symbol=9
-            else -> symbol=str[index].toInt() // Почему .toInt() переводит строку '1' не в число 1, а вроде бы в 7 ?
+            else -> symbol=str[index].toInt() // Почему-то .toInt() переводит символ '1' не в число 1, а вроде бы в 7.
         }
         result+=symbol*pow(base.toDouble(), count)
         count-=1
@@ -500,7 +500,7 @@ fun word2(n: Int): String = when (n) {
     17 -> "семнадцать"
     18 -> "восемнадцать"
     19 -> "девятнадцать"
-    else  -> " "
+    else  -> ""
 }
 
 fun word1(n: Int, count: Int): String {
@@ -513,7 +513,7 @@ fun word1(n: Int, count: Int): String {
             4 -> "сорок"
             in 5..8 -> word2(n)+"десят"
             9 -> "девяносто"
-            else -> " "
+            else -> ""
         }
     }
     if (count==3) {
@@ -522,7 +522,7 @@ fun word1(n: Int, count: Int): String {
             2 -> "двести"
             in 3..4 -> word2(n)+"ста"
             in 5..9 -> word2(n)+"сот"
-            else -> " "
+            else -> ""
         }
     }
     if (count==4) {
@@ -531,7 +531,7 @@ fun word1(n: Int, count: Int): String {
             2 -> "две тысячи"
             in 3..4 -> word2(n)+" тысячи"
             in 5..9 -> word2(n)+" тысяч"
-            else -> " тысяч"
+            else -> "тысяч"
             }
     }
     if (count==5) {
@@ -540,7 +540,7 @@ fun word1(n: Int, count: Int): String {
             4 -> "сорок"
             in 5..8 -> (word2(n)+"десят")
             9 -> "девяносто"
-            else -> " "
+            else -> ""
         }
     } else {
         return when (n) {
@@ -564,7 +564,7 @@ fun russian(n: Int): String {
         n/=100
         str.add(word)
     }
-    while (n>=1 && count<4){
+    while (n>=1 && count<3){
         count+=1
         word= word1(n%10, count)
         str.add(word)
@@ -572,7 +572,7 @@ fun russian(n: Int): String {
     }
     if (n%100 in 10..20) {
         count+=2
-        word=word1(n%100, 1)+"тысяч"
+        word=word1(n%100, 1)+" тысяч"
         n/=100
         str.add(word)
     }
@@ -582,7 +582,10 @@ fun russian(n: Int): String {
         str.add(word)
         n/=10
     }
-    return str.joinToString(separator="")
+    var result=mutableListOf<String>()
+    while("" in str) str.remove("")
+    for (i in str.size-1 downTo 0) result.add(str[i])
+    return result.joinToString(separator=" ")
 }
 
 
