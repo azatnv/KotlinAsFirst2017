@@ -284,9 +284,44 @@ fun convertToString(n: Int, base: Int): String {
         result1.add(mod)
         n/=base
     }
-    var result2= mutableListOf<Int>()
-    for (i in result1.size-1 downTo 0) result2.add(result1[i])
-    return result2.joinToString()
+    var result2= mutableListOf<String>()
+    for (i in result1.size-1 downTo 0) {
+       if (result1[i]<10)
+           result2.add(result1[i].toString())
+        else {
+           var Char=""
+           when {
+               result1[i]==10 -> Char="a"
+               result1[i]==11 -> Char="b"
+               result1[i]==12 -> Char="c"
+               result1[i]==13 -> Char="d"
+               result1[i]==14 -> Char="e"
+               result1[i]==15 -> Char="f"
+               result1[i]==16 -> Char="g"
+               result1[i]==17 -> Char="h"
+               result1[i]==18 -> Char="i"
+               result1[i]==19 -> Char="j"
+               result1[i]==20 -> Char="k"
+               result1[i]==21 -> Char="l"
+               result1[i]==22 -> Char="m"
+               result1[i]==23 -> Char="n"
+               result1[i]==24 -> Char="o"
+               result1[i]==25 -> Char="p"
+               result1[i]==26 -> Char="q"
+               result1[i]==27 -> Char="r"
+               result1[i]==28 -> Char="s"
+               result1[i]==29 -> Char="t"
+               result1[i]==30 -> Char="u"
+               result1[i]==31 -> Char="v"
+               result1[i]==32 -> Char="w"
+               result1[i]==33 -> Char="x"
+               result1[i]==34 -> Char="y"
+               result1[i]==35 -> Char="z"
+           }
+           result2.add(Char)
+       }
+    }
+    return result2.joinToString(separator="")
 }
 
 
@@ -297,7 +332,15 @@ fun convertToString(n: Int, base: Int): String {
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var result=0.0
+    var count=(digits.size-1)*1.0
+    for (element in digits) {
+        result+=element*pow(base.toDouble(), count)
+        count-=1
+    }
+    return result.toInt()
+}
 
 /**
  * Сложная
@@ -308,7 +351,55 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var result=0.0
+    var count=(str.length-1)*1.0
+    var symbol: Int
+    for ((index, char) in str.withIndex()) {
+        when (char) {
+            'a' -> symbol=10
+            'b' -> symbol=11
+            'c' -> symbol=12
+            'd' -> symbol=13
+            'e' -> symbol=14
+            'f' -> symbol=15
+            'g' -> symbol=16
+            'h' -> symbol=17
+            'i' -> symbol=18
+            'j' -> symbol=19
+            'k' -> symbol=20
+            'l' -> symbol=21
+            'm' -> symbol=22
+            'n' -> symbol=23
+            'o' -> symbol=24
+            'p' -> symbol=25
+            'q' -> symbol=26
+            'r' -> symbol=27
+            's' -> symbol=28
+            't' -> symbol=29
+            'u' -> symbol=30
+            'v' -> symbol=31
+            'w' -> symbol=32
+            'x' -> symbol=33
+            'y' -> symbol=34
+            'z' -> symbol=35
+            '0' -> symbol=0
+            '1' -> symbol=1
+            '2' -> symbol=2
+            '3' -> symbol=3
+            '4' -> symbol=4
+            '5' -> symbol=5
+            '6' -> symbol=6
+            '7' -> symbol=7
+            '8' -> symbol=8
+            '9' -> symbol=9
+            else -> symbol=str[index].toInt() // Почему .toInt() переводит строку '1' не в число 1, а вроде бы в 7 ?
+        }
+        result+=symbol*pow(base.toDouble(), count)
+        count-=1
+    }
+    return result.toInt()
+}
 
 /**
  * Сложная
@@ -318,7 +409,69 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var result= mutableListOf<String>()
+    var n=n
+    if (n>=1000) {
+        for (i in 1..n/1000) result.add("M")
+        n%=1000
+    }
+    when (n) {
+        in 900 until 1000 -> {
+            result.add("CM")
+            n-=900
+        }
+        in 500 until 900 -> {
+            result.add("D")
+            n-=500
+        }
+        in 400 until 500 -> {
+            result.add("CD")
+            n-=400
+        }
+    }
+    if (n in 100 until 400) {
+        while (n>=100){
+            result.add("C")
+            n-=100
+        }
+    }
+    when (n) {
+        in 90 until 100 -> {
+            result.add("XC")
+            n-=90
+        }
+        in 50 until 90 -> {
+            result.add("L")
+            n-=50
+        }
+        in 40 until 50 -> {
+            result.add("XL")
+            n-=40
+        }
+    }
+    if (n in 10 until 30) {
+        while (n>=10){
+            result.add("X")
+            n-=10
+        }
+    }
+    when (n) {
+        9 -> result.add("IX")
+        in 5 until 9 -> {
+            result.add("V")
+            n-=5
+        }
+        4 -> result.add("IV")
+    }
+    if (n in 1..3) {
+        while (n>=1){
+            result.add("I")
+            n-=1
+        }
+    }
+    return result.joinToString(separator="")
+}
 
 /**
  * Очень сложная
@@ -327,4 +480,9 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var count=0
+    while (n>=1){
+
+    }
+}
