@@ -362,17 +362,7 @@ fun decimalFromString(str: String, base: Int): Int {
             'x' -> symbol=33
             'y' -> symbol=34
             'z' -> symbol=35
-            '0' -> symbol=0
-            '1' -> symbol=1
-            '2' -> symbol=2
-            '3' -> symbol=3
-            '4' -> symbol=4
-            '5' -> symbol=5
-            '6' -> symbol=6
-            '7' -> symbol=7
-            '8' -> symbol=8
-            '9' -> symbol=9
-            else -> symbol=str[index].toInt() // Почему-то .toInt() переводит символ '1' не в число 1, а вроде бы в 7.
+            else -> symbol=str[index].toString().toInt()
         }
         result+=symbol*pow(base.toDouble(), count)
         count-=1
