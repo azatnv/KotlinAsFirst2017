@@ -108,16 +108,14 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = when {
-    v.isEmpty() -> 0.0
-    else -> {
-        val kvadrat=mutableListOf<Double>()
-        for (i in v) {
-            kvadrat.add(i*i)
-        }
-        sqrt(kvadrat.sum())
+fun abs(v: List<Double>): Double {
+    val sqr=mutableListOf<Double>()
+    for (i in v) {
+        sqr.add(i*i)
     }
+    return sqrt(sqr.sum())
 }
+
 
 /**
  * Простая
@@ -139,7 +137,7 @@ fun mean(list: List<Double>): Double =  when {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     if (list.size==0) return list
-    val srd=list.sum()/list.size
+    val srd=mean(list)
     for ((index, element) in list.withIndex()) {
         list[index]=element-srd
     }
@@ -154,7 +152,6 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
 fun times(a: List<Double>, b: List<Double>): Double {
-    if (a.isEmpty() && b.isEmpty()) return 0.0
     var c=0.0
     for (i in 0 until a.size) c+=a[i]*b[i]
     return c
@@ -171,10 +168,8 @@ fun times(a: List<Double>, b: List<Double>): Double {
 fun polynom(p: List<Double>, x: Double): Double {
     if (p.isEmpty()) return 0.0
     var result=p.first()
-    var count=1.0
     for (i in 1 until p.size) {
-        result+=p[i]*pow(x, count)
-        count+=1
+        result+=p[i]*pow(x, i*1.0)
     }
     return result
 }
@@ -208,19 +203,16 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  */
 fun factorize(n: Int): List<Int> {
     var result=mutableListOf<Int>()
-    var a=n
-    while (a!=1) {
-        for (i in 2..n) {
-            if (n % i == 0) {
-                while (a % i == 0) {
-                    result.add(i)
-                    a/=i
-                }
-            }
-        }
+    var divisor=2
+    var n=n
+    while (divisor<=n) {
+        if (n%divisor==0) {
+            result.add(divisor)
+            n/=divisor
+        } else
+            divisor++
     }
-    return if (result.size==0) listOf(n) else
-        result
+    return result
 }
 
 /**
@@ -230,20 +222,8 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  */
 fun factorizeToString(n: Int): String {
-    var result=mutableListOf<Int>()
-    var a=n
-    while (a!=1) {
-        for (i in 2..n) {
-            if (n % i == 0) {
-                while (a % i == 0) {
-                    result.add(i)
-                    a/=i
-                }
-            }
-        }
-    }
-    return if (result.size==0) "$n" else
-        result.joinToString(separator="*")
+    val result= factorize(n)
+    return result.joinToString(separator="*")
 }
 
 /**
@@ -262,9 +242,7 @@ fun convert(n: Int, base: Int): List<Int> {
         result1.add(mod)
         n/=base
     }
-    var result2= mutableListOf<Int>()
-    for (i in result1.size-1 downTo 0) result2.add(result1[i])
-    return result2
+    return result1.reversed()
 }
 
 /**
@@ -284,8 +262,9 @@ fun convertToString(n: Int, base: Int): String {
         result1.add(mod)
         n/=base
     }
+    result1=result1.asReversed()
     var result2= mutableListOf<String>()
-    for (i in result1.size-1 downTo 0) {
+    for (i in 0 until result1.size) {
        if (result1[i]<10)
            result2.add(result1[i].toString())
         else {
@@ -587,25 +566,3 @@ fun russian(n: Int): String {
     for (i in str.size-1 downTo 0) result.add(str[i])
     return result.joinToString(separator=" ")
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

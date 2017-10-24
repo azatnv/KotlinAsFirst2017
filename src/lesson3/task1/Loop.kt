@@ -93,17 +93,14 @@ fun fib(n: Int): Int {
 fun lcm(m: Int, n: Int): Int {
     var a=m
     var b=n
-    var nod=max(m,n)
     while (a!=b) {
         if (a > b) {
             a-=b
-            nod=a
         } else {
             b-=a
-            nod=b
         }
     }
-    return m*n/nod
+    return m*n/a
 }
 
 /**
@@ -112,14 +109,17 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var k=0
-    for (i in 2..n) {
-        if (n%i==0) {
-            k=i
-            break
-        }
+    var divisor=2
+    var minDivisor=n
+    var n=n
+    while (divisor*divisor<=n) {
+        if (n%divisor==0) {
+            n/=divisor
+            if (divisor<minDivisor) minDivisor=divisor
+        } else
+            divisor++
     }
-    return k
+    return minDivisor
 }
 
 /**
@@ -127,16 +127,8 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var k=0
-    for (i in n-1 downTo  1) {
-        if (n%i==0) {
-            k=i
-            break
-        }
-    }
-    return k
-}
+fun maxDivisor(n: Int): Int = n/minDivisor(n)
+
 
 /**
  * Простая
@@ -145,13 +137,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var x= minOf(m,n)
-    for (i in 2..x) {
-        if (m%i==0 && n%i==0) return false
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = m*n==lcm(m,n)
 
 /**
  * Простая
@@ -175,19 +161,19 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var m=0.0 // последий/очеередной "член ряда" (как я понял это слагаемое, которое мы прибавляем к sin(x) и сравниваем его модуль с eps)
+    var m=1.0 // очередной "член ряда"
     var result=0.0 // - это sin(x)
     var f=1 // аргумент факториала
     var pow1=2.0 // степень (-1)^pow1
-    var powX=1.0 // степенгь x^powX
+    var powX=1.0 // степень x^powX
     if (abs(eps)>abs(x)) return x
-    do {
+    while (abs(m)>=abs(eps)) {
         result+=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
         m=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
         f+=2
         powX+=2.0
         pow1++
-    } while (abs(m)>=abs(eps))
+    }
     return result
 }
 
@@ -200,19 +186,19 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
-    var m=0.0 // "очередной член ряда"
+    var m=pow(x, 2.0)/ factorial(2) // "очередной член ряда"
     var result=1.0 // =cos(x)
     var f=2 // факториал
     var pow1=1.0 // (-1)^pow1
     var powX=2.0 //  x^powX
-    if (abs(eps)>abs(x)) return x
-    do {
+    if (abs(eps)>abs(x)) return 1.0
+    while (abs(m)>=abs(eps)) {
         result+=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
         m=pow(x, powX)/ factorial(f)* pow(-1.0,pow1)
         f+=2
         powX+=2.0
         pow1++
-    } while (abs(m)>=abs(eps))
+    }
     return result
 }
 
