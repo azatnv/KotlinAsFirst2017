@@ -2,6 +2,7 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
+import lesson4.task1.abs
 import java.lang.Math.*
 
 /**
@@ -162,7 +163,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var x=x
-    if (x>3*PI) x-=(x/PI).toInt()/2*2*PI
+    if (abs(x)>3*PI) x-=(x/PI).toInt()/2*2*PI
     var m=1.0 // очередной "член ряда"
     var result=0.0 // - это sin(x)
     var f=1 // аргумент факториала
@@ -189,7 +190,7 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var x=x
-    if (x>3*PI) x-=(x/PI).toInt()/2*2*PI
+    if (abs(x)>3*PI) x-=(x/PI).toInt()/2*2*PI
     var m=pow(x, 2.0)/ factorial(2) // "очередной член ряда"
     var result=1.0 // =cos(x)
     var f=2 // факториал

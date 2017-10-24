@@ -237,11 +237,12 @@ fun convert(n: Int, base: Int): List<Int> {
     var result1= mutableListOf<Int>()
     var mod=0
     var n=n
-    while (n>0) {
-        mod=n%base
-        result1.add(mod)
-        n/=base
-    }
+    if (n==0) return listOf(0) else
+        while (n>0) {
+            mod=n%base
+            result1.add(mod)
+            n/=base
+        }
     return result1.reversed()
 }
 
@@ -254,54 +255,57 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    var result1= mutableListOf<Int>()
-    var mod=0
-    var n=n
-    while (n>0) {
-        mod=n%base
-        result1.add(mod)
-        n/=base
+    var result1 = mutableListOf<Int>()
+    var mod = 0
+    var n = n
+    if (n == 0) return "0" else {
+        while (n > 0) {
+            mod = n % base
+            result1.add(mod)
+            n /= base
+        }
     }
-    result1=result1.asReversed()
-    var result2= mutableListOf<String>()
+    result1 = result1.asReversed()
+    var result2 = mutableListOf<String>()
     for (i in 0 until result1.size) {
-       if (result1[i]<10)
-           result2.add(result1[i].toString())
+        if (result1[i] < 10)
+            result2.add(result1[i].toString())
         else {
-           var Char=""
-           when {
-               result1[i]==10 -> Char="a"
-               result1[i]==11 -> Char="b"
-               result1[i]==12 -> Char="c"
-               result1[i]==13 -> Char="d"
-               result1[i]==14 -> Char="e"
-               result1[i]==15 -> Char="f"
-               result1[i]==16 -> Char="g"
-               result1[i]==17 -> Char="h"
-               result1[i]==18 -> Char="i"
-               result1[i]==19 -> Char="j"
-               result1[i]==20 -> Char="k"
-               result1[i]==21 -> Char="l"
-               result1[i]==22 -> Char="m"
-               result1[i]==23 -> Char="n"
-               result1[i]==24 -> Char="o"
-               result1[i]==25 -> Char="p"
-               result1[i]==26 -> Char="q"
-               result1[i]==27 -> Char="r"
-               result1[i]==28 -> Char="s"
-               result1[i]==29 -> Char="t"
-               result1[i]==30 -> Char="u"
-               result1[i]==31 -> Char="v"
-               result1[i]==32 -> Char="w"
-               result1[i]==33 -> Char="x"
-               result1[i]==34 -> Char="y"
-               result1[i]==35 -> Char="z"
-           }
-           result2.add(Char)
-       }
+            var Char = ""
+            when {
+                result1[i] == 10 -> Char = "a"
+                result1[i] == 11 -> Char = "b"
+                result1[i] == 12 -> Char = "c"
+                result1[i] == 13 -> Char = "d"
+                result1[i] == 14 -> Char = "e"
+                result1[i] == 15 -> Char = "f"
+                result1[i] == 16 -> Char = "g"
+                result1[i] == 17 -> Char = "h"
+                result1[i] == 18 -> Char = "i"
+                result1[i] == 19 -> Char = "j"
+                result1[i] == 20 -> Char = "k"
+                result1[i] == 21 -> Char = "l"
+                result1[i] == 22 -> Char = "m"
+                result1[i] == 23 -> Char = "n"
+                result1[i] == 24 -> Char = "o"
+                result1[i] == 25 -> Char = "p"
+                result1[i] == 26 -> Char = "q"
+                result1[i] == 27 -> Char = "r"
+                result1[i] == 28 -> Char = "s"
+                result1[i] == 29 -> Char = "t"
+                result1[i] == 30 -> Char = "u"
+                result1[i] == 31 -> Char = "v"
+                result1[i] == 32 -> Char = "w"
+                result1[i] == 33 -> Char = "x"
+                result1[i] == 34 -> Char = "y"
+                result1[i] == 35 -> Char = "z"
+            }
+            result2.add(Char)
+        }
     }
     return result2.joinToString(separator="")
 }
+
 
 
 /**
@@ -382,7 +386,7 @@ fun roman(n: Int): String {
     var result=mutableListOf<String>()
     var n=n
     if (n>=1000) {
-        for (i in 1..n/1000) result.add("M")
+        for (i in 1..n/1000)  result.add("M")
         n%=1000
     }
     when (n) {
@@ -419,7 +423,7 @@ fun roman(n: Int): String {
             n-=40
         }
     }
-    if (n in 10 until 30) {
+    if (n in 10 until 40) {
         while (n>=10){
             result.add("X")
             n-=10
