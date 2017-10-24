@@ -161,6 +161,8 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
+    var x=x
+    if (x>3*PI) x-=(x/PI).toInt()/2*2*PI
     var m=1.0 // очередной "член ряда"
     var result=0.0 // - это sin(x)
     var f=1 // аргумент факториала
@@ -186,6 +188,8 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
+    var x=x
+    if (x>3*PI) x-=(x/PI).toInt()/2*2*PI
     var m=pow(x, 2.0)/ factorial(2) // "очередной член ряда"
     var result=1.0 // =cos(x)
     var f=2 // факториал
