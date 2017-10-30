@@ -137,9 +137,9 @@ fun mean(list: List<Double>): Double =  when {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     if (list.size==0) return list
-    val srd=mean(list)
+    val mean=mean(list)
     for ((index, element) in list.withIndex()) {
-        list[index]=element-srd
+        list[index]=element-mean
     }
     return list
 }
@@ -266,46 +266,16 @@ fun convertToString(n: Int, base: Int): String {
         }
     }
     result1 = result1.asReversed()
-    var result2 = mutableListOf<String>()
+    var result2 = mutableListOf<Char>()
     for (i in 0 until result1.size) {
         if (result1[i] < 10)
-            result2.add(result1[i].toString())
+            result2.add((result1[i]+48).toChar())
         else {
-            var Char = ""
-            when {
-                result1[i] == 10 -> Char = "a"
-                result1[i] == 11 -> Char = "b"
-                result1[i] == 12 -> Char = "c"
-                result1[i] == 13 -> Char = "d"
-                result1[i] == 14 -> Char = "e"
-                result1[i] == 15 -> Char = "f"
-                result1[i] == 16 -> Char = "g"
-                result1[i] == 17 -> Char = "h"
-                result1[i] == 18 -> Char = "i"
-                result1[i] == 19 -> Char = "j"
-                result1[i] == 20 -> Char = "k"
-                result1[i] == 21 -> Char = "l"
-                result1[i] == 22 -> Char = "m"
-                result1[i] == 23 -> Char = "n"
-                result1[i] == 24 -> Char = "o"
-                result1[i] == 25 -> Char = "p"
-                result1[i] == 26 -> Char = "q"
-                result1[i] == 27 -> Char = "r"
-                result1[i] == 28 -> Char = "s"
-                result1[i] == 29 -> Char = "t"
-                result1[i] == 30 -> Char = "u"
-                result1[i] == 31 -> Char = "v"
-                result1[i] == 32 -> Char = "w"
-                result1[i] == 33 -> Char = "x"
-                result1[i] == 34 -> Char = "y"
-                result1[i] == 35 -> Char = "z"
-            }
-            result2.add(Char)
+            result2.add((result1[i]+87).toChar())
         }
     }
     return result2.joinToString(separator="")
 }
-
 
 
 /**
@@ -338,36 +308,9 @@ fun decimalFromString(str: String, base: Int): Int {
     var result=0.0
     var count=(str.length-1)*1.0
     var symbol: Int
-    for ((index, char) in str.withIndex()) {
-        when (char) {
-            'a' -> symbol=10
-            'b' -> symbol=11
-            'c' -> symbol=12
-            'd' -> symbol=13
-            'e' -> symbol=14
-            'f' -> symbol=15
-            'g' -> symbol=16
-            'h' -> symbol=17
-            'i' -> symbol=18
-            'j' -> symbol=19
-            'k' -> symbol=20
-            'l' -> symbol=21
-            'm' -> symbol=22
-            'n' -> symbol=23
-            'o' -> symbol=24
-            'p' -> symbol=25
-            'q' -> symbol=26
-            'r' -> symbol=27
-            's' -> symbol=28
-            't' -> symbol=29
-            'u' -> symbol=30
-            'v' -> symbol=31
-            'w' -> symbol=32
-            'x' -> symbol=33
-            'y' -> symbol=34
-            'z' -> symbol=35
-            else -> symbol=str[index].toString().toInt()
-        }
+    for ( char in str) {
+        symbol = if (char.toInt()<58) char.toInt()-48
+        else char.toInt()-87
         result+=symbol*pow(base.toDouble(), count)
         count-=1
     }
@@ -476,60 +419,41 @@ fun word2(n: Int): String = when (n) {
     else  -> ""
 }
 
-fun word1(n: Int, count: Int): String {
-    if (count==1) {
-        return word2(n)
-    }
-    if (count==2) {
-        return when (n) {
-            in 2..3 -> word2(n)+"дцать"
-            4 -> "сорок"
-            in 5..8 -> word2(n)+"десят"
-            9 -> "девяносто"
-            else -> ""
-        }
-    }
-    if (count==3) {
-        return when (n) {
-            1 -> "сто"
-            2 -> "двести"
-            in 3..4 -> word2(n)+"ста"
-            in 5..9 -> word2(n)+"сот"
-            else -> ""
-        }
-    }
-    if (count==4) {
-        return when (n) {
-            1 -> "одна тысяча"
-            2 -> "две тысячи"
-            in 3..4 -> word2(n)+" тысячи"
-            in 5..9 -> word2(n)+" тысяч"
-            else -> "тысяч"
-            }
-    }
-    if (count==5) {
-        return when (n) {
-            in 2..3 -> (word2(n)+"дцать")
-            4 -> "сорок"
-            in 5..8 -> (word2(n)+"десят")
-            9 -> "девяносто"
-            else -> ""
-        }
-    } else {
-        return when (n) {
-            1 -> "сто"
-            2 -> "двести"
-            in 3..4 -> word2(n)+"ста"
-            else -> word2(n)+"сот"
-        }
-    }
+fun count25(n:Int): String = when (n) {
+    in 2..3 -> (word2(n)+"дцать")
+    4 -> "сорок"
+    in 5..8 -> (word2(n)+"десят")
+    9 -> "девяносто"
+    else -> ""
 }
+
+fun count36(n:Int):String =when (n) {
+    1 -> "сто"
+    2 -> "двести"
+    in 3..4 -> word2(n)+"ста"
+    in 5..9 -> word2(n)+"сот"
+    else -> ""
+}
+fun word1(n: Int, count: Int): String = when (count) {
+    1 -> word2(n)
+    2 -> count25(n)
+    3 -> count36(n)
+    4 -> when (n) {
+        1 -> "одна тысяча"
+        2 -> "две тысячи"
+        in 3..4 -> word2(n)+" тысячи"
+        in 5..9 -> word2(n)+" тысяч"
+        else -> "тысяч"
+    }
+    5 -> count25(n)
+    else -> count36(n)
+}
+
 
 fun russian(n: Int): String {
     var count=0
     var str=mutableListOf<String>()
     var word=""
-    var symbol=0
     var n=n
     if (n%100 in 10..20) {
         count+=2
@@ -560,3 +484,4 @@ fun russian(n: Int): String {
     for (i in str.size-1 downTo 0) result.add(str[i])
     return result.joinToString(separator=" ")
 }
+
