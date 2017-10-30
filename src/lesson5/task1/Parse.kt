@@ -1,6 +1,8 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson5.task1
 
+import sun.misc.Regexp
+
 /**
  * Пример
  *
@@ -66,7 +68,35 @@ fun main(args: Array<String>) {
  * День и месяц всегда представлять двумя цифрами, например: 03.04.2011.
  * При неверном формате входной строки вернуть пустую строку
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val parts=str.split(" ")
+    var result=mutableListOf<Int>()
+    try {
+        try {
+            for (i in 0..2)
+                when (parts[i]) {
+                    "января" -> result.add(1)
+                    "февраля" -> result.add(2)
+                    "марта" -> result.add(3)
+                    "апреля" -> result.add(4)
+                    "мая" -> result.add(5)
+                    "июня" -> result.add(6)
+                    "июля" -> result.add(7)
+                    "августа" -> result.add(8)
+                    "сентября" -> result.add(9)
+                    "октября" -> result.add(10)
+                    "ноября" -> result.add(11)
+                    "декабря" -> result.add(12)
+                    else -> result.add(parts[i].toInt())
+                }
+        } catch (e: NumberFormatException) {
+            return ""
+        }
+    } catch (e:IndexOutOfBoundsException) {
+        return ""
+    }
+    return String.format("%02d.%02d.%04d", result[0], result[1], result[2])
+}
 
 /**
  * Средняя
@@ -75,7 +105,40 @@ fun dateStrToDigit(str: String): String = TODO()
  * Перевести её в строковый формат вида "15 июля 2016".
  * При неверном формате входной строки вернуть пустую строку
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val digital="."+digital
+    val parts=digital.split(".", ".0")
+    var result=mutableListOf<String>()
+    if (parts.size>4) return ""
+    try {
+        try {
+            for (i in 1..3)
+                if (i==2) {
+                    when (parts[i]) {
+                        "01" -> result.add("января")
+                        "02" -> result.add("февраля")
+                        "03" -> result.add("марта")
+                        "04" -> result.add("апреля")
+                        "05"-> result.add("мая")
+                        "06" -> result.add("июня")
+                        "07" -> result.add("июля")
+                        "08" -> result.add("августа")
+                        "09"-> result.add("сентября")
+                        "10" -> result.add("октября")
+                        "11" -> result.add("ноября")
+                        "12" -> result.add("декабря")
+                        else -> return ""
+                    }
+                }  else result.add(parts[i].toInt().toString())
+
+        } catch (e: NumberFormatException) {
+            return ""
+        }
+    } catch (e:IndexOutOfBoundsException) {
+        return ""
+    }
+    return result.joinToString(separator=" ")
+}
 
 /**
  * Средняя
@@ -89,7 +152,24 @@ fun dateDigitToStr(digital: String): String = TODO()
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    var result= mutableListOf<String>()
+    for (char in phone) result.add("$char")
+    while (" " in result) result.remove(" ")
+    while ("(" in result) result.remove("(")
+    while (")" in result) result.remove(")")
+    while ("-" in result) result.remove("-")
+    try {
+        if (result[0] == "+") {
+            for (i in 1 until result.size) result[i] = result[i].toInt().toString()
+        } else {
+            for (i in 0 until result.size) result[i] = result[i].toInt().toString()
+        }
+    } catch ( e: NumberFormatException) {
+        return ""
+    }
+    return result.joinToString(separator="")
+}
 
 /**
  * Средняя
@@ -101,7 +181,20 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    var parts=jumps.split(" ")
+    var result= mutableListOf<Int>()
+    try {
+        for (i in 0 until parts.size) {
+            if (parts[i] == "-" || parts[i] == "%") continue
+            else result.add(parts[i].toInt())
+        }
+    } catch (e: NumberFormatException) {
+        return -1
+    }
+    return if (result.isEmpty()) -1
+    else result.max()!!
+}
 
 /**
  * Сложная
@@ -113,7 +206,20 @@ fun bestLongJump(jumps: String): Int = TODO()
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var parts=jumps.split(" ")
+    var result= mutableListOf<Int>()
+    try {
+        for (i in 0 until parts.size) {
+            if (parts[i]=="%-" || parts[i]=="%+" || parts[i]=="%" || parts[i]=="%%-") continue
+            else if (parts[i]=="+") result.add(parts[i-1].toInt())
+        }
+    } catch (e: NumberFormatException) {
+        return -1
+    }
+    return if (result.isEmpty()) -1
+    else result.max()!!
+}
 
 /**
  * Сложная
@@ -124,7 +230,20 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (!(expression.matches(Regex("""(\d\s([+-])\s)*\d""")))) {
+        throw IllegalArgumentException()
+    }
+    var parts=expression.split(" ")
+    var result=parts[0].toInt()
+    for (i in 1 until parts.size) {
+        when {
+            parts[i]=="+" -> result+=parts[i+1].toInt()
+            parts[i]=="-" -> result-=parts[i+1].toInt()
+        }
+    }
+    return result
+}
 
 /**
  * Сложная
