@@ -2,6 +2,7 @@
 package lesson5.task1
 
 import sun.misc.Regexp
+import java.util.regex.MatchResult
 
 /**
  * Пример
@@ -231,7 +232,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if (!(expression.matches(Regex("""(\d\s([+-])\s)*\d""")))) {
+    if (!(expression.matches(Regex("""(\d+\s([+-])\s)*\d+""")))) {
         throw IllegalArgumentException()
     }
     var parts=expression.split(" ")
@@ -254,7 +255,14 @@ fun plusMinus(expression: String): Int {
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    var str=str.toLowerCase()
+    var result=Regex("""([а-яА-ЯёЁ]+)\s\1[\s$]""").find(str, startIndex=0)
+    return if (result!=null) {
+        return result.range.start
+    }
+    else -1
+}
 
 /**
  * Сложная
