@@ -232,7 +232,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if (!(expression.matches(Regex("""(\d+\s([+-])\s)*\d+""")))) {
+    if (!(expression.matches(Regex("""(\d+\s[+-]\s)*\d+""")))) {
         throw IllegalArgumentException()
     }
     var parts=expression.split(" ")
@@ -275,7 +275,24 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть положительными
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (!(description.matches(Regex("""(\w+\s\d+\.\d+;[\s$])+""")))) {
+        return ""
+    }
+    var parts=description.split("; ")
+    var maxElement=0.0
+    var result=""
+    for (element in parts) { // Тут что-то не так...
+        val parts1=element.split(" ")
+        val product=parts1[0]
+        val value=parts1[1].toDouble()
+        if (value>maxElement) {
+            maxElement=value
+            result=product
+        }
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -288,7 +305,15 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun HelperFormatRoman(roman: String, n: String): Int {
+
+}
+fun fromRoman(roman: String): Int {
+    if (!(roman.matches(Regex("""^(M{0,3})(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$""")))) {
+        return -1
+    }
+return 1 // не решена
+}
 
 /**
  * Очень сложная
