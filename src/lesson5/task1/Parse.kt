@@ -256,8 +256,8 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    var str=str.toLowerCase()
-    var result=Regex("""([а-яА-ЯёЁ]+)\s\1[\s$]""").find(str, startIndex=0)
+    val str=str.toLowerCase()
+    val result=Regex("""([а-яА-ЯёЁ]+)\s\1[\s$]""").find(str, startIndex=0)
     return if (result!=null) {
         return result.range.start
     }
@@ -276,13 +276,13 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть положительными
  */
 fun mostExpensive(description: String): String {
-    if (!(description.matches(Regex("""(\w+\s\d+\.\d+;[\s$])+""")))) {
+    if (!(description.matches(Regex("""(([а-яА-ЯёЁ]+)\s\d+\.\d+(;[\s]|$))+""")))) {
         return ""
     }
     var parts=description.split("; ")
     var maxElement=0.0
     var result=""
-    for (element in parts) { // Тут что-то не так...
+    for (element in parts) {
         val parts1=element.split(" ")
         val product=parts1[0]
         val value=parts1[1].toDouble()
@@ -305,14 +305,78 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun HelperFormatRoman(roman: String, n: String): Int {
 
-}
 fun fromRoman(roman: String): Int {
     if (!(roman.matches(Regex("""^(M{0,3})(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$""")))) {
         return -1
     }
-return 1 // не решена
+    var result=0
+    var count=0
+    var find=Regex("""M""").find(roman, count)
+    if (find!=null) {
+        if (Regex("""CM""").containsMatchIn(roman) && find.value.length==1) {
+            count+=2
+            result+=900
+        } else
+             if(Regex("""CM""").containsMatchIn(roman) && find.value.length==1) {
+                 count += find.value.length
+                 result += 1
+             }
+    }
+    if (Regex("""D""").containsMatchIn(roman)) {
+        result += if (roman[count]=='D') {
+            count++
+            500
+        } else {
+            count+=2
+            400
+        }
+    }
+    find=Regex("""C""").find(roman, count)
+    if (find!=null) {
+        while (roman[count]=='C') {
+            count++
+            result+=100
+        }
+        if (Regex("""XC""").containsMatchIn(roman)) {
+            count+=2
+            result+=90
+        }
+    }
+    if (Regex("""L""").containsMatchIn(roman)) {
+        result += if (roman[count]=='D') {
+            count++
+            50
+        } else {
+            count+=2
+            40
+        }
+    }
+    find=Regex("""X""").find(roman, count)
+    if (find!=null) {
+        while (roman[count]=='X') {
+            count++
+            result+=10
+        }
+        if (Regex("""IX""").containsMatchIn(roman)) {
+            count+=2
+            result+=9
+        }
+    }
+    if (Regex("""V""").containsMatchIn(roman)) {
+        result += if (roman[count]=='D') {
+            count++
+            5
+        } else {
+            count+=2
+            4
+        }
+    }
+    find=Regex("""I""").find(roman, count)
+    if (find!=null) {
+            result+=find.value.length
+    }
+    return result
 }
 
 /**
