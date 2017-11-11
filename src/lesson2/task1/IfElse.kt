@@ -121,7 +121,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  */
 fun triangleKindHelper(a: Double, b: Double, c: Double): Int {
     if (a>=(b+c)) return -1
-    val cos=(sqr(b)+sqr(c)-sqr(a))/2*b*c
+    val cos=(sqr(b)+sqr(c)-sqr(a))/(2*b*c)
     if (cos==0.0) return 1
     if (cos>0.0 && cos<1.0) return 0
     return 2

@@ -136,7 +136,6 @@ fun mean(list: List<Double>): Double =  when {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    if (list.size==0) return list
     val mean=mean(list)
     for ((index, element) in list.withIndex()) {
         list[index]=element-mean
@@ -185,11 +184,8 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
-    var h: MutableList<Double>
     for (i in list.size-1 downTo 0) {
-        h=list.subList(0, i)
-        list[i]+= h.sum()
+        list[i]+=list.subList(0, i).sum()
     }
     return list
 }
@@ -255,23 +251,16 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    var result1 = mutableListOf<Int>()
-    var mod = 0
     var n = n
-    if (n == 0) return "0" else {
-        while (n > 0) {
-            mod = n % base
-            result1.add(mod)
-            n /= base
-        }
-    }
-    result1 = result1.asReversed()
+    var result1=convert(n, base)
     var result2 = mutableListOf<Char>()
+    val digit='0'.toInt()  //48
+    val letter='W'.toInt() //87
     for (i in 0 until result1.size) {
         if (result1[i] < 10)
-            result2.add((result1[i]+48).toChar())
+            result2.add((result1[i]+digit).toChar())
         else {
-            result2.add((result1[i]+87).toChar())
+            result2.add((result1[i]+letter).toChar())
         }
     }
     return result2.joinToString(separator="")
@@ -308,9 +297,11 @@ fun decimalFromString(str: String, base: Int): Int {
     var result=0.0
     var count=(str.length-1)*1.0
     var symbol: Int
-    for ( char in str) {
-        symbol = if (char.toInt()<58) char.toInt()-48
-        else char.toInt()-87
+    val digit='0'.toInt()  //48
+    val letter='W'.toInt() //87
+    for (char in str) {
+        symbol = if (char.toInt()<58) char.toInt()-digit
+        else char.toInt()-letter
         result+=symbol*pow(base.toDouble(), count)
         count-=1
     }
@@ -450,6 +441,16 @@ fun word1(n: Int, count: Int): String = when (count) {
     else -> count36(n)
 }
 
+fun helper1(n: Int, count: Int): String {
+    var n=n
+    var count=count
+    val word=word1(n%100, 1)
+    return if (count==2) word
+    else word+" тысяч"
+}
+
+fun helper2(n: Int, count: Int): String =
+        word1(n%10, count)
 
 fun russian(n: Int): String {
     var count=0
@@ -458,26 +459,22 @@ fun russian(n: Int): String {
     var n=n
     if (n%100 in 10..20) {
         count+=2
-        word=word1(n%100, 1)
+        str.add(helper1(n%100, count))
         n/=100
-        str.add(word)
     }
-    while (n>=1 && count<3){
+    while (n>=1 && count<3) {
         count+=1
-        word= word1(n%10, count)
-        str.add(word)
+        str.add(helper2(n, count))
         n/=10
     }
     if (n%100 in 10..20) {
         count+=2
-        word=word1(n%100, 1)+" тысяч"
+        str.add(helper1(n%100, count))
         n/=100
-        str.add(word)
     }
-    while (n>=1){
+    while (n>=1) {
         count+=1
-        word= word1(n%10, count)
-        str.add(word)
+        str.add(helper2(n, count))
         n/=10
     }
     var result=mutableListOf<String>()

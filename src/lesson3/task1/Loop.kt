@@ -120,15 +120,15 @@ fun lcm(m: Int, n: Int): Int {
 fun minDivisor(n: Int): Int {
     var divisor=2
     var n=n
-    var flag=0
+    var flag=false
     while (divisor*divisor<=n) {
         if (n%divisor==0) {
-            flag=1
+            flag=true
             break
         }
         else divisor++
     }
-    return if (flag==0) n
+    return if (!flag) n
     else divisor
 }
 
@@ -252,9 +252,9 @@ fun isPalindrome(n: Int): Boolean =
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
 fun hasDifferentDigits(n: Int): Boolean = when {
-    (n<10) -> false
-    (n%10!=n/10%10)-> true
-    else -> hasDifferentDigits(n/10)
+    (n%10!=n/10%10 && n>=10) -> true
+    (n>=10) -> hasDifferentDigits(n/10)
+    else -> false
 }
 
 
@@ -271,7 +271,7 @@ fun squareSequenceDigit(n: Int): Int {
     var result: Int
     var sqr=1
     while (count<a) {
-        a+=-count
+        a-=count
         sqr+=1
         result=sqr*sqr
         count=digitNumber(result)
@@ -279,7 +279,7 @@ fun squareSequenceDigit(n: Int): Int {
     result=sqr*sqr
     while (count>a) {
         result/=10
-        count+=-1
+        count-=1
     }
     return result%10
 }
@@ -299,7 +299,7 @@ fun fibSequenceDigit(n: Int): Int {
     var fib2=1
     if (n==1) return 1
     while (count<a) {
-        a+=-count
+        a-=count
         fib1+=fib2
         fib2=fib1-fib2
         result=fib1
@@ -308,7 +308,7 @@ fun fibSequenceDigit(n: Int): Int {
     result=fib1
     while (count>a) {
         result/=10
-        count+=-1
+        count-=1
     }
     return result%10
 }
