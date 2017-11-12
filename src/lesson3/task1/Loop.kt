@@ -251,10 +251,18 @@ fun isPalindrome(n: Int): Boolean =
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean = when {
-    (n%10!=n/10%10 && n>=10) -> true
-    (n>=10) -> hasDifferentDigits(n/10)
-    else -> false
+fun hasDifferentDigits(n: Int): Boolean {
+    var first: Int
+    var second: Int
+    var n=n
+    if (n in 0..9) return false
+    while (n>9) {
+        first=(n/10)%10
+        second=n%10
+        n/=10
+        if (first!=second) return true
+    }
+    return false
 }
 
 
@@ -296,12 +304,12 @@ fun fibSequenceDigit(n: Int): Int {
     var count=1
     var result: Int
     var fib1=1
-    var fib2=1
+    var k=3
     if (n==1) return 1
     while (count<a) {
         a-=count
-        fib1+=fib2
-        fib2=fib1-fib2
+        fib1=fib(k)
+        k++
         result=fib1
         count=digitNumber(result)
     }

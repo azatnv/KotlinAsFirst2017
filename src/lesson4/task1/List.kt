@@ -184,8 +184,8 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    for (i in list.size-1 downTo 0) {
-        list[i]+=list.subList(0, i).sum()
+    for (i in 1 until list.size) {
+        list[i]+=list[i-1]
     }
     return list
 }
@@ -254,13 +254,11 @@ fun convertToString(n: Int, base: Int): String {
     var n = n
     var result1=convert(n, base)
     var result2 = mutableListOf<Char>()
-    val digit='0'.toInt()  //48
-    val letter='W'.toInt() //87
     for (i in 0 until result1.size) {
         if (result1[i] < 10)
-            result2.add((result1[i]+digit).toChar())
+            result2.add(result1[i].toChar()+'0'.toInt())
         else {
-            result2.add((result1[i]+letter).toChar())
+            result2.add(result1[i].toChar()+'W'.toInt())
         }
     }
     return result2.joinToString(separator="")
@@ -297,11 +295,9 @@ fun decimalFromString(str: String, base: Int): Int {
     var result=0.0
     var count=(str.length-1)*1.0
     var symbol: Int
-    val digit='0'.toInt()  //48
-    val letter='W'.toInt() //87
     for (char in str) {
-        symbol = if (char.toInt()<58) char.toInt()-digit
-        else char.toInt()-letter
+        symbol = if (char.toInt() in '0'.toInt()..'9'.toInt()) char.toInt()-'0'.toInt()
+        else char.toInt()-'W'.toInt()
         result+=symbol*pow(base.toDouble(), count)
         count-=1
     }
@@ -316,66 +312,52 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+fun helperRoman(n: Int): Int = when (n) {
+    in 100 until 400 -> (n/100)*100
+    in 10 until 40 -> (n/10)*10
+    in 1 until 4 -> n
+    in 900 until 1000 -> 900
+    in 500 until 900 -> 500
+    in 400 until 500 -> 400
+    in 90 until 100 -> 90
+    in 50 until 90 -> 50
+    in 40 until 50 -> 40
+    in 5 until 9 -> 5
+    else -> n
+}
+private val map=mapOf(1 to "I", 2 to "II", 3 to "III", 4 to "IV", 5 to "V", 9 to "IX",
+        10 to "X", 20 to "XX", 30 to "XXX", 40 to "XL", 50 to "L", 90 to "XC",
+        100 to "C", 200 to "CC", 300 to "CCC", 400 to "CD", 500 to "D", 900 to "CM",
+        1000 to "M", 2000 to "MM", 3000 to "MMM")
 fun roman(n: Int): String {
     var result=mutableListOf<String>()
     var n=n
     if (n>=1000) {
-        for (i in 1..n/1000)  result.add("M")
+        result.add(map[(n/1000)*1000].toString())
         n%=1000
     }
-    when (n) {
-        in 900 until 1000 -> {
-            result.add("CM")
-            n-=900
-        }
-        in 500 until 900 -> {
-            result.add("D")
-            n-=500
-        }
-        in 400 until 500 -> {
-            result.add("CD")
-            n-=400
-        }
+    if (n in 400 until 1000) {
+        result.add(map[helperRoman(n)].toString())
+        n-=helperRoman(n)
     }
     if (n in 100 until 400) {
-        while (n>=100){
-            result.add("C")
-            n-=100
-        }
+        result.add(map[helperRoman(n)].toString())
+        n-=helperRoman(n)
     }
-    when (n) {
-        in 90 until 100 -> {
-            result.add("XC")
-            n-=90
-        }
-        in 50 until 90 -> {
-            result.add("L")
-            n-=50
-        }
-        in 40 until 50 -> {
-            result.add("XL")
-            n-=40
-        }
+    if (n in 40 until 100) {
+        result.add(map[helperRoman(n)].toString())
+        n-=helperRoman(n)
     }
     if (n in 10 until 40) {
-        while (n>=10){
-            result.add("X")
-            n-=10
-        }
+        result.add(map[helperRoman(n)].toString())
+        n-=helperRoman(n)
     }
-    when (n) {
-        9 -> result.add("IX")
-        in 5 until 9 -> {
-            result.add("V")
-            n-=5
-        }
-        4 -> result.add("IV")
+    if (n in 4 until 10) {
+        result.add(map[helperRoman(n)].toString())
+        n-=helperRoman(n)
     }
     if (n in 1..3) {
-        while (n>=1){
-            result.add("I")
-            n-=1
-        }
+        result.add(map[n].toString())
     }
     return result.joinToString(separator="")
 }
@@ -455,7 +437,6 @@ fun helper2(n: Int, count: Int): String =
 fun russian(n: Int): String {
     var count=0
     var str=mutableListOf<String>()
-    var word=""
     var n=n
     if (n%100 in 10..20) {
         count+=2
@@ -477,9 +458,7 @@ fun russian(n: Int): String {
         str.add(helper2(n, count))
         n/=10
     }
-    var result=mutableListOf<String>()
     while("" in str) str.remove("")
-    for (i in str.size-1 downTo 0) result.add(str[i])
-    return result.joinToString(separator=" ")
+    return str.asReversed().joinToString(separator = " ")
 }
 
