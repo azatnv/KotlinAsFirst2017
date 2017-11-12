@@ -111,7 +111,7 @@ fun dateStrToDigit(str: String): String {
  */
 fun month2(str: String): String = when (str) {
     "01" -> "января"
-    "02" -> "феврраля"
+    "02" -> "февраля"
     "03" -> "марта"
     "04" -> "апреля"
     "05" -> "мая"
@@ -158,7 +158,10 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun helper(result: MutableList<String>, n: Int): MutableList<String> {
-    for (i in n until result.size) result[i] = result[i].toInt().toString()
+    val list= mutableListOf("")
+    try {
+        for (i in n until result.size) result[i] = result[i].toInt().toString()
+    } catch (e: IndexOutOfBoundsException) { return list }
     return result
 }
 fun flattenPhoneNumber(phone: String): String {
@@ -169,11 +172,13 @@ fun flattenPhoneNumber(phone: String): String {
     while (")" in result) result.remove(")")
     while ("-" in result) result.remove("-")
     try {
-        if (result[0] == "+") helper(result, 1)
-        else helper(result, 0)
-    } catch ( e: NumberFormatException) {
-        return ""
-    }
+        try {
+            if (result[0] == "+") helper(result, 1)
+            else helper(result, 0)
+        } catch ( e: NumberFormatException) {
+            return ""
+        }
+    } catch (e: IndexOutOfBoundsException) { return result.joinToString() }
     return result.joinToString(separator="")
 }
 
@@ -281,7 +286,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть положительными
  */
 fun mostExpensive(description: String): String {
-    if (!(description.matches(Regex("""(([а-яА-ЯёЁ\w]+)\s\d+\.\d+(;[\s]|$))+""")))) {
+    if (!(description.matches(Regex("""(.*\s\d+\.\d+(;[\s]|$))+""")))) {
         return ""
     }
     var parts=description.split("; ")
@@ -310,81 +315,67 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
+fun helperRoman2(roman: String, count: Int, char: Char): Int {
+    val find=Regex("""$char+""").find(roman, count)
+    var result=0
+    var count=count
+    if (find!=null) {
+        if (roman[count]==char) {
+            count+=find.value.length
+            result+= when (char){
+                'M' -> 1000*find.value.length
+                'C' -> 100*find.value.length
+                'X' -> 10*find.value.length
+                else -> find.value.length
+            }
+        }
+        when (char) {
+            'M' -> if (Regex("""CM""").containsMatchIn(roman)) result+=900
+            'C' -> if (Regex("""XC""").containsMatchIn(roman)) result+=90
+            else -> if (Regex("""IX""").containsMatchIn(roman)) result+=9
+        }
+    }
+    return result
+}
+
+fun helperRoman1(roman: String, count: Int, char: Char): Int = when (char) {
+    'D' -> if (roman[count]=='D') 500 else 400
+    'L' -> if (roman[count]=='L') 50 else 40
+    else -> if (roman[count]=='V') 5 else 4
+}
 
 fun fromRoman(roman: String): Int {
-    if (!(roman.matches(Regex("""^(M{0,3})(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$""")))) {
+    if (!(roman.matches(Regex("""^(M{0,3})(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$"""))) || roman.isEmpty()) {
         return -1
     }
     var result=0
     var count=0
-    var find=Regex("""M+""").find(roman, count)
-    if (find!=null) {
-        if (Regex("""CM""").containsMatchIn(roman) && !Regex("""MCM""").containsMatchIn(roman)) {
-            count+=2
-            result+=900
-        } else
-             if(Regex("""MCM""").containsMatchIn(roman)) {
-                 count+=find.value.length+2
-                 result+=1000*find.value.length+900
-             }
-        else {
-                 count+=find.value.length
-                 result+=1000*find.value.length
-             }
-    }
+    var symbolValue: Int
+    symbolValue= helperRoman2(roman, count, 'M')
+    result+=symbolValue
+    count+=symbolValue/1000+(symbolValue%1000)/450
     if (Regex("""D""").containsMatchIn(roman)) {
-        result+=if(roman[count]=='D') {
-            count++
-            500
-        } else {
-            count+=2
-            400
-        }
+        symbolValue= helperRoman1(roman, count, 'D')
+        result+=symbolValue
+        count+= if (symbolValue==500) 1 else 2
     }
-    find=Regex("""C""").find(roman, count)
-    if (find!=null) {
-        while (roman[count]=='C') {
-            count++
-            result+=100
-        }
-        if (Regex("""XC""").containsMatchIn(roman)) {
-            count+=2
-            result+=90
-        }
-    }
+    symbolValue=helperRoman2(roman, count, 'C')
+    result+=symbolValue
+    count+=symbolValue/100+(symbolValue%100)/45
     if (Regex("""L""").containsMatchIn(roman)) {
-        result += if (roman[count]=='L') {
-            count++
-            50
-        } else {
-            count+=2
-            40
-        }
+        symbolValue= helperRoman1(roman, count, 'L')
+        result+=symbolValue
+        count+= if (symbolValue==50) 1 else 2
     }
-    find=Regex("""X""").find(roman, count)
-    if (find!=null) {
-        while (roman[count]=='X') {
-            count++
-            result+=10
-        }
-        if (Regex("""IX""").containsMatchIn(roman)) {
-            count+=2
-            result+=9
-        }
-    }
+    symbolValue=helperRoman2(roman, count, 'X')
+    result+=symbolValue
+    count+=symbolValue/10+(symbolValue%10)/4
     if (Regex("""V""").containsMatchIn(roman)) {
-        result += if (roman[count]=='V') {
-            count++
-            5
-        } else {
-            count+=2
-            4
-        }
+        symbolValue=helperRoman1(roman, count, 'V')
+        result+=symbolValue
+        count+= if (symbolValue==5) 1 else 2
     }
-    find=Regex("""I+""").find(roman, count)
-    if (find!=null) {
-            result+=find.value.length
-    }
+    result+=helperRoman2(roman, count, 'I')
     return result
 }
 
