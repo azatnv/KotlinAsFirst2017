@@ -288,10 +288,10 @@ fun mostExpensive(description: String): String {
 fun helperRoman2(roman: String, count: Int, char: Char): Pair<Int, Int> {
     val find=Regex("""$char+""").find(roman, count)
     var result=0
-    var count=count
+    var countSymbol=0
     if (find!=null) {
         if (roman[count]==char) {
-            count+=find.value.length
+            countSymbol+=find.value.length
             result+= when (char){
                 'M' -> 1000*find.value.length
                 'C' -> 100*find.value.length
@@ -302,16 +302,16 @@ fun helperRoman2(roman: String, count: Int, char: Char): Pair<Int, Int> {
         when (char) {
             'M' -> if (Regex("""CM""").containsMatchIn(roman)) {
                 result+=900
-                count+=2}
+                countSymbol+=2}
             'C' -> if (Regex("""XC""").containsMatchIn(roman)) {
                 result+=90
-                count+=2}
+                countSymbol+=2}
             else -> if (Regex("""IX""").containsMatchIn(roman)) {
                 result+=9
-                count+=2}
+                countSymbol+=2}
         }
     }
-    return Pair(result, count)
+    return Pair(result, countSymbol)
 }
 
 fun helperRoman1(roman: String, count: Int, char: Char): Pair<Int, Int> = when (char) {
