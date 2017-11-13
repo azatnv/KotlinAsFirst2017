@@ -85,7 +85,7 @@ fun month(str: String): Int = when (str) {
     else -> str.toInt()
 }
 private val listMonth=listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
-        "августа", "сентября", "октября", "ноября", "декабря")
+        "августа", "сентября", "октября", "ноября", "декабря/")
 fun dateStrToDigit(str: String): String {
     val parts=str.split(" ")
     var result=mutableListOf<Int>()
