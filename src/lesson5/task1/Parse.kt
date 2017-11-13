@@ -84,18 +84,17 @@ fun month(str: String): Int = when (str) {
     "декабря" -> 12
     else -> str.toInt()
 }
+private val listMonth=listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
+        "августа", "сентября", "октября", "ноября", "декабря")
 fun dateStrToDigit(str: String): String {
     val parts=str.split(" ")
     var result=mutableListOf<Int>()
     try {
-        try {
-            for (i in 0..2)
-                if (i==1) result.add(month(parts[1]))
-                else result.add(parts[i].toInt())
-
-        } catch (e: NumberFormatException) {
-            return ""
-        }
+        for (i in 0..2)
+            if (i==1) result.add(listMonth.indexOf(parts[i])+1)
+            else result.add(parts[i].toInt())
+    } catch (e: NumberFormatException) {
+        return ""
     } catch (e:IndexOutOfBoundsException) {
         return ""
     }
@@ -124,6 +123,9 @@ fun month2(str: String): String = when (str) {
     "12" -> "декабря"
     else -> ""
 }
+private val mapMonth=mapOf("01" to "января", "02" to "февраля", "03" to "марта",
+        "04" to "апреля", "05" to "мая", "06" to "июня", "07" to "июля", "08" to "августа",
+        "09" to "сентября", "10" to "октября", "11" to "ноября", "12" to "декабря")
 fun dateDigitToStr(digital: String): String {
     val parts=digital.split(".")
     var result=mutableListOf<String>()
@@ -167,10 +169,7 @@ fun helper(result: MutableList<String>, n: Int): MutableList<String> {
 fun flattenPhoneNumber(phone: String): String {
     var result= mutableListOf<String>()
     for (char in phone) result.add("$char")
-    while (" " in result) result.remove(" ")
-    while ("(" in result) result.remove("(")
-    while (")" in result) result.remove(")")
-    while ("-" in result) result.remove("-")
+    result.removeAll(listOf(" ", "(", ")", "-"))
     try {
         try {
             if (result[0] == "+") helper(result, 1)
@@ -178,7 +177,7 @@ fun flattenPhoneNumber(phone: String): String {
         } catch ( e: NumberFormatException) {
             return ""
         }
-    } catch (e: IndexOutOfBoundsException) { return result.joinToString() }
+    } catch (e: IndexOutOfBoundsException) { return "" }
     return result.joinToString(separator="")
 }
 
