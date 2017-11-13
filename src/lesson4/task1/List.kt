@@ -328,13 +328,13 @@ fun helperRoman(n: Int): Int = when (n) {
 private val map=mapOf(1 to "I", 2 to "II", 3 to "III", 4 to "IV", 5 to "V", 9 to "IX",
         10 to "X", 20 to "XX", 30 to "XXX", 40 to "XL", 50 to "L", 90 to "XC",
         100 to "C", 200 to "CC", 300 to "CCC", 400 to "CD", 500 to "D", 900 to "CM",
-        1000 to "M", 2000 to "MM", 3000 to "MMM")
+        1000 to "M")
 fun roman(n: Int): String {
     var result=mutableListOf<String>()
     var n=n
-    if (n>=1000) {
-        result.add(map[(n/1000)*1000].toString())
-        n%=1000
+    while (n>=1000) {
+        result.add(map[1000].toString())
+        n-=1000
     }
     if (n in 400 until 1000) {
         result.add(map[helperRoman(n)].toString())

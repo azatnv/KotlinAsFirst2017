@@ -69,33 +69,21 @@ fun main(args: Array<String>) {
  * День и месяц всегда представлять двумя цифрами, например: 03.04.2011.
  * При неверном формате входной строки вернуть пустую строку
  */
-fun month(str: String): Int = when (str) {
-    "января" -> 1
-    "февраля" -> 2
-    "марта" -> 3
-    "апреля" -> 4
-    "мая" -> 5
-    "июня" -> 6
-    "июля" -> 7
-    "августа" -> 8
-    "сентября" -> 9
-    "октября" -> 10
-    "ноября" -> 11
-    "декабря" -> 12
-    else -> str.toInt()
-}
+
 private val listMonth=listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
-        "августа", "сентября", "октября", "ноября", "декабря/")
+        "августа", "сентября", "октября", "ноября", "декабря")
 fun dateStrToDigit(str: String): String {
     val parts=str.split(" ")
-    var result=mutableListOf<Int>()
+    val result=mutableListOf<Int>()
+    if (parts.size!=3) return ""
     try {
         for (i in 0..2)
-            if (i==1) result.add(listMonth.indexOf(parts[i])+1)
+            if (i==1) {
+                if (listMonth.indexOf(parts[1])+1==0) return "" else
+                    result.add(listMonth.indexOf(parts[i])+1)
+            }
             else result.add(parts[i].toInt())
     } catch (e: NumberFormatException) {
-        return ""
-    } catch (e:IndexOutOfBoundsException) {
         return ""
     }
     return String.format("%02d.%02d.%d", result[0], result[1], result[2])
@@ -108,41 +96,22 @@ fun dateStrToDigit(str: String): String {
  * Перевести её в строковый формат вида "15 июля 2016".
  * При неверном формате входной строки вернуть пустую строку
  */
-fun month2(str: String): String = when (str) {
-    "01" -> "января"
-    "02" -> "февраля"
-    "03" -> "марта"
-    "04" -> "апреля"
-    "05" -> "мая"
-    "06" -> "июня"
-    "07" -> "июля"
-    "08" -> "августа"
-    "09" -> "сентября"
-    "10" -> "октября"
-    "11" -> "ноября"
-    "12" -> "декабря"
-    else -> ""
-}
+
 private val mapMonth=mapOf("01" to "января", "02" to "февраля", "03" to "марта",
         "04" to "апреля", "05" to "мая", "06" to "июня", "07" to "июля", "08" to "августа",
         "09" to "сентября", "10" to "октября", "11" to "ноября", "12" to "декабря")
 fun dateDigitToStr(digital: String): String {
     val parts=digital.split(".")
     var result=mutableListOf<String>()
-    if (parts.size>3) return ""
+    if (parts.size!=3) return ""
     try {
-        try {
-            for (i in 0..2)
-                if (i==1) {
-                    if (month2(parts[i])=="") return "" else
-                        result.add(month2(parts[i]))
-                } else result.add(parts[i].toInt().toString())
-
-        } catch (e: NumberFormatException) {
+        for (i in 0..2)
+            if (i==1) {
+                if (mapMonth[parts[i]]==null) return "" else
+                    result.add(mapMonth[parts[i]].toString())
+            } else result.add(parts[i].toInt().toString())
+    } catch (e: NumberFormatException) {
             return ""
-        }
-    } catch (e:IndexOutOfBoundsException) {
-        return ""
     }
     return result.joinToString(separator=" ")
 }
@@ -160,10 +129,9 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun helper(result: MutableList<String>, n: Int): MutableList<String> {
-    val list= mutableListOf("")
-    try {
-        for (i in n until result.size) result[i] = result[i].toInt().toString()
-    } catch (e: IndexOutOfBoundsException) { return list }
+    for (i in n until result.size){
+        result[i] = result[i].toInt().toString()
+    }
     return result
 }
 fun flattenPhoneNumber(phone: String): String {
@@ -171,13 +139,16 @@ fun flattenPhoneNumber(phone: String): String {
     for (char in phone) result.add("$char")
     result.removeAll(listOf(" ", "(", ")", "-"))
     try {
-        try {
-            if (result[0] == "+") helper(result, 1)
-            else helper(result, 0)
-        } catch ( e: NumberFormatException) {
-            return ""
+        when {
+            result[0]=="+" && result.size==1 -> return ""
+            result[0]=="+" -> helper(result, 1)
+            else -> helper(result, 0)
         }
-    } catch (e: IndexOutOfBoundsException) { return "" }
+    } catch (e: NumberFormatException) {
+        return ""
+    } catch (e: IndexOutOfBoundsException) {
+        return ""
+    }
     return result.joinToString(separator="")
 }
 
@@ -221,7 +192,7 @@ fun bestHighJump(jumps: String): Int {
     var result= mutableListOf<Int>()
     try {
         for (i in 0 until parts.size) {
-            if (parts[i]=="%-" || parts[i]=="%%-" || parts[i]=="-" || parts[i]=="%") continue
+            if (parts[i]=="-" || parts[i]=="%" || parts[i]=="%-" || parts[i]=="%%-") continue
             else if (parts[i]=="+" ||  parts[i]=="%+" ||  parts[i]=="%%+") result.add(parts[i-1].toInt())
         }
     } catch (e: NumberFormatException) {
@@ -266,7 +237,7 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val str=str.toLowerCase()
-    val result=Regex("""([а-яА-ЯёЁ]+)\s\1[\s$]""").find(str, startIndex=0)
+    val result=Regex("""([а-яё]+)\s\1(?:\s|$)""").find(str, startIndex=0)
     return if (result!=null) {
         return result.range.start
     }
@@ -285,11 +256,11 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть положительными
  */
 fun mostExpensive(description: String): String {
-    if (!(description.matches(Regex("""(.*\s\d+\.\d+(;[\s]|$))+""")))) {
+    if (!(description.matches(Regex("""(.*\s\d+(\.\d+)?(?:(?:;[\s])|$))+""")))) {
         return ""
     }
     var parts=description.split("; ")
-    var maxElement=0.0
+    var maxElement=-1.0
     var result=""
     for (element in parts) {
         val parts1=element.split(" ")
@@ -314,7 +285,7 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun helperRoman2(roman: String, count: Int, char: Char): Int {
+fun helperRoman2(roman: String, count: Int, char: Char): Pair<Int, Int> {
     val find=Regex("""$char+""").find(roman, count)
     var result=0
     var count=count
@@ -329,52 +300,58 @@ fun helperRoman2(roman: String, count: Int, char: Char): Int {
             }
         }
         when (char) {
-            'M' -> if (Regex("""CM""").containsMatchIn(roman)) result+=900
-            'C' -> if (Regex("""XC""").containsMatchIn(roman)) result+=90
-            else -> if (Regex("""IX""").containsMatchIn(roman)) result+=9
+            'M' -> if (Regex("""CM""").containsMatchIn(roman)) {
+                result+=900
+                count+=2}
+            'C' -> if (Regex("""XC""").containsMatchIn(roman)) {
+                result+=90
+                count+=2}
+            else -> if (Regex("""IX""").containsMatchIn(roman)) {
+                result+=9
+                count+=2}
         }
     }
-    return result
+    return Pair(result, count)
 }
 
-fun helperRoman1(roman: String, count: Int, char: Char): Int = when (char) {
-    'D' -> if (roman[count]=='D') 500 else 400
-    'L' -> if (roman[count]=='L') 50 else 40
-    else -> if (roman[count]=='V') 5 else 4
+fun helperRoman1(roman: String, count: Int, char: Char): Pair<Int, Int> = when (char) {
+    'D' -> if (roman[count]=='D') Pair(500, 1) else Pair(400,2)
+    'L' -> if (roman[count]=='L') Pair(50, 1) else Pair(40,2)
+    else -> if (roman[count]=='V') Pair(5, 1) else Pair(4,2)
 }
 
 fun fromRoman(roman: String): Int {
-    if (!(roman.matches(Regex("""^(M{0,3})(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$"""))) || roman.isEmpty()) {
+    if (!(roman.matches(Regex("""^(M*)(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$"""))) || roman.isEmpty()) {
         return -1
     }
     var result=0
     var count=0
-    var symbolValue: Int
-    symbolValue= helperRoman2(roman, count, 'M')
-    result+=symbolValue
-    count+=symbolValue/1000+(symbolValue%1000)/450
+    var t: Pair<Int, Int>
+    t=helperRoman2(roman, count, 'M')
+    result+=t.first
+    count+=t.second
     if (Regex("""D""").containsMatchIn(roman)) {
-        symbolValue= helperRoman1(roman, count, 'D')
-        result+=symbolValue
-        count+= if (symbolValue==500) 1 else 2
+        t=helperRoman1(roman, count, 'D')
+        result+=t.first
+        count+=t.second
     }
-    symbolValue=helperRoman2(roman, count, 'C')
-    result+=symbolValue
-    count+=symbolValue/100+(symbolValue%100)/45
+    t=helperRoman2(roman, count, 'C')
+    result+=t.first
+    count+=t.second
     if (Regex("""L""").containsMatchIn(roman)) {
-        symbolValue= helperRoman1(roman, count, 'L')
-        result+=symbolValue
-        count+= if (symbolValue==50) 1 else 2
+        t=helperRoman1(roman, count, 'L')
+        result+=t.first
+        count+=t.second
     }
-    symbolValue=helperRoman2(roman, count, 'X')
-    result+=symbolValue
-    count+=symbolValue/10+(symbolValue%10)/4
+    t=helperRoman2(roman, count, 'X')
+    result+=t.first
+    count+=t.second
     if (Regex("""V""").containsMatchIn(roman)) {
-        symbolValue=helperRoman1(roman, count, 'V')
-        result+=symbolValue
-        count+= if (symbolValue==5) 1 else 2
+        t=helperRoman1(roman, count, 'V')
+        result+=t.first
+        count+=t.second
     }
-    result+=helperRoman2(roman, count, 'I')
+    result+=helperRoman2(roman, count, 'I').first
     return result
 }
 
