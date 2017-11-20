@@ -97,9 +97,6 @@ fun dateStrToDigit(str: String): String {
  * При неверном формате входной строки вернуть пустую строку
  */
 
-private val mapMonth=mapOf("01" to "января", "02" to "февраля", "03" to "марта",
-        "04" to "апреля", "05" to "мая", "06" to "июня", "07" to "июля", "08" to "августа",
-        "09" to "сентября", "10" to "октября", "11" to "ноября", "12" to "декабря")
 fun dateDigitToStr(digital: String): String {
     val parts=digital.split(".")
     var result=mutableListOf<String>()
@@ -107,8 +104,8 @@ fun dateDigitToStr(digital: String): String {
     try {
         for (i in 0..2)
             if (i==1) {
-                if (mapMonth[parts[i]]==null) return "" else
-                    result.add(mapMonth[parts[i]].toString())
+                if (parts[i].toInt() !in 1..12) return "" else
+                    result.add(listMonth[parts[i].toInt()-1])
             } else result.add(parts[i].toInt().toString())
     } catch (e: NumberFormatException) {
             return ""
@@ -128,28 +125,11 @@ fun dateDigitToStr(digital: String): String {
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun helper(result: MutableList<String>, n: Int): MutableList<String> {
-    for (i in n until result.size){
-        result[i] = result[i].toInt().toString()
-    }
-    return result
-}
+
 fun flattenPhoneNumber(phone: String): String {
-    var result= mutableListOf<String>()
-    for (char in phone) result.add("$char")
-    result.removeAll(listOf(" ", "(", ")", "-"))
-    try {
-        when {
-            result[0]=="+" && result.size==1 -> return ""
-            result[0]=="+" -> helper(result, 1)
-            else -> helper(result, 0)
-        }
-    } catch (e: NumberFormatException) {
-        return ""
-    } catch (e: IndexOutOfBoundsException) {
-        return ""
-    }
-    return result.joinToString(separator="")
+    val result=phone.split(" ", "-", ")", "(").joinToString(separator="")
+    return if (!Regex("""^\+?\d+$""").matches(result)) ""
+    else result
 }
 
 /**
@@ -192,8 +172,8 @@ fun bestHighJump(jumps: String): Int {
     var result= mutableListOf<Int>()
     try {
         for (i in 0 until parts.size) {
-            if (parts[i]=="-" || parts[i]=="%" || parts[i]=="%-" || parts[i]=="%%-") continue
-            else if (parts[i]=="+" ||  parts[i]=="%+" ||  parts[i]=="%%+") result.add(parts[i-1].toInt())
+            if (Regex("""^%|(%*-+)$""").matches(parts[i])) continue
+            else if (Regex("""^%*\+$""").matches(parts[i])) result.add(parts[i-1].toInt())
         }
     } catch (e: NumberFormatException) {
         return -1
@@ -256,7 +236,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть положительными
  */
 fun mostExpensive(description: String): String {
-    if (!(description.matches(Regex("""(.*\s\d+(\.\d+)?(?:(?:;[\s])|$))+""")))) {
+    if (!(description.matches(Regex("""(.*\s\d+(\.\d+)?(;\s|$))+""")))) {
         return ""
     }
     var parts=description.split("; ")

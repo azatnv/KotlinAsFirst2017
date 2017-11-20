@@ -258,7 +258,7 @@ fun convertToString(n: Int, base: Int): String {
         if (result1[i] < 10)
             result2.add(result1[i].toChar()+'0'.toInt())
         else {
-            result2.add(result1[i].toChar()+'W'.toInt())
+            result2.add(result1[i].toChar()+'a'.toInt()-10)
         }
     }
     return result2.joinToString(separator="")
@@ -296,8 +296,8 @@ fun decimalFromString(str: String, base: Int): Int {
     var count=(str.length-1)*1.0
     var symbol: Int
     for (char in str) {
-        symbol = if (char.toInt() in '0'.toInt()..'9'.toInt()) char.toInt()-'0'.toInt()
-        else char.toInt()-'W'.toInt()
+        symbol = if (char in '0'..'9') char-'0'
+        else char-'a'+10
         result+=symbol*pow(base.toDouble(), count)
         count-=1
     }
@@ -330,31 +330,33 @@ private val map=mapOf(1 to "I", 2 to "II", 3 to "III", 4 to "IV", 5 to "V", 9 to
         100 to "C", 200 to "CC", 300 to "CCC", 400 to "CD", 500 to "D", 900 to "CM",
         1000 to "M")
 fun roman(n: Int): String {
-    var result=mutableListOf<String>()
-    var n=n
-    while (n>=1000) {
+    var result = mutableListOf<String>()
+    var n = n
+    while (n >= 1000) {
         result.add(map[1000].toString())
-        n-=1000
+        n -= 1000
     }
-    if (n in 400 until 1000) {
-        result.add(map[helperRoman(n)].toString())
-        n-=helperRoman(n)
-    }
-    if (n in 100 until 400) {
-        result.add(map[helperRoman(n)].toString())
-        n-=helperRoman(n)
-    }
-    if (n in 40 until 100) {
-        result.add(map[helperRoman(n)].toString())
-        n-=helperRoman(n)
-    }
-    if (n in 10 until 40) {
-        result.add(map[helperRoman(n)].toString())
-        n-=helperRoman(n)
-    }
-    if (n in 4 until 10) {
-        result.add(map[helperRoman(n)].toString())
-        n-=helperRoman(n)
+    var a=400
+    var b=1000
+    var count=0
+    while (n > 3) {
+        count++
+        if (count%2==1) {
+            if (n in a until b) {
+                result.add(map[helperRoman(n)].toString())
+                n -= helperRoman(n)
+            }
+            a*=10
+        }
+        else {
+            if (n in b until a) {
+                result.add(map[helperRoman(n)].toString())
+                n -= helperRoman(n)
+            }
+            b*=10
+        }
+        a/=10
+        b/=10
     }
     if (n in 1..3) {
         result.add(map[n].toString())
@@ -438,25 +440,19 @@ fun russian(n: Int): String {
     var count=0
     var str=mutableListOf<String>()
     var n=n
-    if (n%100 in 10..20) {
-        count+=2
-        str.add(helper1(n%100, count))
-        n/=100
-    }
-    while (n>=1 && count<3) {
-        count+=1
-        str.add(helper2(n, count))
-        n/=10
-    }
-    if (n%100 in 10..20) {
-        count+=2
-        str.add(helper1(n%100, count))
-        n/=100
-    }
-    while (n>=1) {
-        count+=1
-        str.add(helper2(n, count))
-        n/=10
+    var rank=3
+    while (count<6 && n>0) {
+        if (n%100 in 10..20) {
+            count+=2
+            str.add(helper1(n%100, count))
+            n/=100
+        }
+        while (n>=1 && count<rank) {
+            count+=1
+            str.add(helper2(n, count))
+            n/=10
+        }
+        rank+=3
     }
     while("" in str) str.remove("")
     return str.asReversed().joinToString(separator = " ")
