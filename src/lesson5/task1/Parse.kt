@@ -219,7 +219,7 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val str=str.toLowerCase()
-    val result=Regex("""([а-яё]+)\s\1(?:\s|$)""").find(str, startIndex=0)
+    val result=Regex("""(\S+)\s\1(?:\s|$)""").find(str, startIndex=0)
     return if (result!=null) {
         return result.range.start
     }

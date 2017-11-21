@@ -209,7 +209,8 @@ fun factorize(n: Int): List<Int> {
         } else
             divisor++
     }
-    return result
+    return if (result.isEmpty()) listOf(n)
+    else result
 }
 
 /**
