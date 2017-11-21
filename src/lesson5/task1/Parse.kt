@@ -126,8 +126,10 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 
+
 fun flattenPhoneNumber(phone: String): String {
-    val result=phone.split(" ", "-", ")", "(").joinToString(separator="")
+    val list=listOf(' ', '-', ')', '(')
+    val result=phone.filter{it !in list}
     return if (!Regex("""^\+?\d+$""").matches(result)) ""
     else result
 }
@@ -267,9 +269,11 @@ fun mostExpensive(description: String): String {
  */
 private val valueRoman1=mapOf("I" to 1, "II" to 2, "III" to 3, "IV" to 4, "V" to 5, "IX" to 9,
         "X" to 10, "XX" to 20, "XXX" to 30, "XL" to 40, "L" to 50, "XC" to 90,
-        "C" to 100, "CC" to 200, "CCC" to 300, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000, "M" to "CM")
-private val valueRoman2=mapOf('M' to "CM", 'C' to "XC", 'X' to "IX")
-fun helperRoman2(roman: String, count: Int, char: Char): Pair<Int, Int> {
+        "C" to 100, "CC" to 200, "CCC" to 300, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000)
+
+private val valueRoman2=mapOf('M' to "CM", 'C' to "XC", 'X' to "IX", 'D' to "CD", 'L' to "XL", 'V' to "IV")
+
+fun helperRoman(roman: String, count: Int, char: Char): Pair<Int, Int> {
     val find=Regex("""$char+""").find(roman, count)
     var result=0
     var countSymbol=0
@@ -278,59 +282,27 @@ fun helperRoman2(roman: String, count: Int, char: Char): Pair<Int, Int> {
             countSymbol+=find.value.length
             result+=valueRoman1[char.toString()]!!*countSymbol
         }
-        when (char) {
-            'M' -> if (Regex("""CM""").containsMatchIn(roman)) {
-                result+=900
-                countSymbol+=2}
-            'C' -> if (Regex("""XC""").containsMatchIn(roman)) {
-                result+=90
-                countSymbol+=2}
-            else -> if (Regex("""IX""").containsMatchIn(roman)) {
-                result+=9
-                countSymbol+=2}
+        val regexRoman=valueRoman2[char].toString()
+        if (Regex("""$regexRoman""").containsMatchIn(roman)) {
+            countSymbol+=2
+            result+=valueRoman1[valueRoman2[char]]!!
         }
     }
     return Pair(result, countSymbol)
 }
 
-fun helperRoman1(roman: String, count: Int, char: Char): Pair<Int, Int> = when (char) {
-    'D' -> if (roman[count]=='D') Pair(500, 1) else Pair(400,2)
-    'L' -> if (roman[count]=='L') Pair(50, 1) else Pair(40,2)
-    else -> if (roman[count]=='V') Pair(5, 1) else Pair(4,2)
-}
-
 fun fromRoman(roman: String): Int {
-    if (!(roman.matches(Regex("""^(M*)(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$"""))) || roman.isEmpty()) {
+    if (!(roman.matches(Regex("""^(M*)(D?C{0,3}|C[DM])(L?X{0,3}|X[LC])(V?I{0,3}|I[VX])$"""))) || roman.isEmpty())
         return -1
-    }
     var result=0
     var count=0
     var t: Pair<Int, Int>
-    t=helperRoman2(roman, count, 'M')
-    result+=t.first
-    count+=t.second
-    if (Regex("""D""").containsMatchIn(roman)) {
-        t=helperRoman1(roman, count, 'D')
-        result+=t.first
-        count+=t.second
+    val list=listOf('M', 'D', 'C', 'L', 'X', 'V', 'I')
+    for (element in list) {
+        t = helperRoman(roman, count, element)
+        result += t.first
+        count += t.second
     }
-    t=helperRoman2(roman, count, 'C')
-    result+=t.first
-    count+=t.second
-    if (Regex("""L""").containsMatchIn(roman)) {
-        t=helperRoman1(roman, count, 'L')
-        result+=t.first
-        count+=t.second
-    }
-    t=helperRoman2(roman, count, 'X')
-    result+=t.first
-    count+=t.second
-    if (Regex("""V""").containsMatchIn(roman)) {
-        t=helperRoman1(roman, count, 'V')
-        result+=t.first
-        count+=t.second
-    }
-    result+=helperRoman2(roman, count, 'I').first
     return result
 }
 
