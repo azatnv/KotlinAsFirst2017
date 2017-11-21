@@ -265,6 +265,10 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
+private val valueRoman1=mapOf("I" to 1, "II" to 2, "III" to 3, "IV" to 4, "V" to 5, "IX" to 9,
+        "X" to 10, "XX" to 20, "XXX" to 30, "XL" to 40, "L" to 50, "XC" to 90,
+        "C" to 100, "CC" to 200, "CCC" to 300, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000, "M" to "CM")
+private val valueRoman2=mapOf('M' to "CM", 'C' to "XC", 'X' to "IX")
 fun helperRoman2(roman: String, count: Int, char: Char): Pair<Int, Int> {
     val find=Regex("""$char+""").find(roman, count)
     var result=0
@@ -272,12 +276,7 @@ fun helperRoman2(roman: String, count: Int, char: Char): Pair<Int, Int> {
     if (find!=null) {
         if (roman[count]==char) {
             countSymbol+=find.value.length
-            result+= when (char){
-                'M' -> 1000*find.value.length
-                'C' -> 100*find.value.length
-                'X' -> 10*find.value.length
-                else -> find.value.length
-            }
+            result+=valueRoman1[char.toString()]!!*countSymbol
         }
         when (char) {
             'M' -> if (Regex("""CM""").containsMatchIn(roman)) {
