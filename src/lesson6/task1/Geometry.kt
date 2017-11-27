@@ -179,8 +179,15 @@ class Line internal constructor(val b: Double, val angle: Double) {
 fun lineBySegment(s: Segment): Line {
     val angle=acos(abs(s.end.x-s.begin.x)/
             sqrt(sqr(s.end.y-s.begin.y)+sqr(s.end.x-s.begin.x)))
-    val b=s.begin.y*cos(angle)-s.begin.x*sin(angle)
-    return Line(b, angle)
+    val angleBySegment=if (s.end.x>s.begin.x) {
+        if (s.end.y>=s.begin.y) angle else PI-angle
+    } else
+        if (s.end.x==s.begin.x) angle
+    else {
+        if (s.end.y>s.begin.y) PI-angle else angle
+    }
+    val b=s.begin.y*cos(angleBySegment)-s.begin.x*sin(angleBySegment)
+    return Line(b, angleBySegment)
 }
 
 /**
@@ -197,9 +204,22 @@ fun lineByPoints(a: Point, b: Point): Line =lineBySegment(Segment(a, b))
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
-    val angle=acos((b.x-a.x) /
-            sqrt(sqr(a.y-b.y)+sqr(a.x-b.x)))
-    val angleBisector=if (b.y>=a.y) angle+PI/2 else angle-PI/2
+    val angleBisector= when {
+        a.x==b.x -> 0.0
+        b.y>a.y -> {
+            val angle=acos((b.x-a.x) /
+                    sqrt(sqr(a.y-b.y)+sqr(a.x-b.x)))
+            if (angle>=PI/2) angle-PI/2
+            else angle+PI/2
+        }
+        b.y<a.y -> {
+            val angle=acos((a.x-b.x) /
+                    sqrt(sqr(a.y-b.y)+sqr(a.x-b.x)))
+            if (angle>=PI/2) angle-PI/2
+            else angle+PI/2
+        }
+        else -> PI/2
+    }
     val midpoint=Point((b.x+a.x)/2, (b.y+a.y)/2)
     val b1=midpoint.y*cos(angleBisector)-midpoint.x*sin(angleBisector)
     return Line(b1, angleBisector)
@@ -218,7 +238,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     for (i in 0 until circles.size-1) {
         for (k in i+1 until circles.size) {
             val range=circles[i].center.distance(circles[k].center)-circles[i].radius-circles[k].radius
-            if (range<minRange && range>=0) {
+            if (range<minRange && range>0) {
                 result=Pair(circles[i], circles[k])
                 minRange=range
             }
@@ -237,10 +257,8 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    val center=bisectorByPoints(c, a).crossPoint(bisectorByPoints(b, a))
-    println(center)
+    val center=bisectorByPoints(a, b).crossPoint(bisectorByPoints(a, c))
     val radius=center.distance(a)
-    println(radius)
     return Circle(center, radius)
 }
 
@@ -255,5 +273,34 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle = TODO()
-
+fun minContainingCircle(vararg points: Point): Circle {
+    if (points.isEmpty()) throw IllegalArgumentException()
+    if (points.size==1) return Circle(points[0], 0.0)
+    var resultListCircle= mutableListOf<Circle>()
+    for (i in 0 until points.size-1){
+        for (g in i+1 until points.size){
+            val diameter=points[i].distance(points[g])
+            val midpoint=Point((points[i].x+points[g].x)/2, (points[i].y+points[g].y)/2)
+            var flag=(0 until points.size).all{points[it].distance(midpoint)<=diameter/2}
+            if (flag) resultListCircle.add(Circle(midpoint, diameter/2))
+        }
+    }
+    if (points.size>2) {
+        for (i in 0 until points.size-2) {
+            for (g in i+1 until points.size-1) {
+                for (k in g+1 until points.size) {
+                    val circle=circleByThreePoints(points[i], points[g], points[k])
+                    val flag=(0 until points.size).all{points[it].distance(circle.center)<=circle.radius}
+                    if (flag) resultListCircle.add(circle)
+                }
+            }
+        }
+    }
+    var result=resultListCircle[0]
+    for(element in resultListCircle) {
+        if (result.radius>element.radius)
+            result=element
+    }
+    print(result)
+    return result
+}
