@@ -338,27 +338,25 @@ fun roman(n: Int): String {
         result.add(map[1000].toString())
         n -= 1000
     }
-    var a=400
-    var b=1000
+    var lowerBorder=400
+    var upperBorder=1000
     var count=0
     while (n > 3) {
         count++
-        if (count%2==1) {
-            if (n in a until b) {
-                result.add(map[helperRoman(n)].toString())
-                n -= helperRoman(n)
-            }
-            a*=10
+        if (count%2==1 && n in lowerBorder until upperBorder) {
+            result.add(map[helperRoman(n)].toString())
+            n -= helperRoman(n)
+            lowerBorder*=10
         }
         else {
-            if (n in b until a) {
+            if (n in upperBorder until lowerBorder) {
                 result.add(map[helperRoman(n)].toString())
                 n -= helperRoman(n)
             }
-            b*=10
+            upperBorder*=10
         }
-        a/=10
-        b/=10
+        lowerBorder/=10
+        upperBorder/=10
     }
     if (n in 1..3) {
         result.add(map[n].toString())

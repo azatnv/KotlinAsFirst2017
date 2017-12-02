@@ -136,7 +136,7 @@ fun circleByDiameter(diameter: Segment): Circle {
  * или: y * cos(angle) = x * sin(angle) + b, где b = point.y * cos(angle) - point.x * sin(angle).
  * Угол наклона обязан находиться в диапазоне от 0 (включительно) до PI (исключительно).
  */
-class Line internal constructor(val b: Double, val angle: Double) {
+class Line private constructor(val b: Double, val angle: Double) {
     init {
         assert(angle >= 0 && angle < Math.PI) { "Incorrect line angle: $angle" }
     }
@@ -154,10 +154,10 @@ class Line internal constructor(val b: Double, val angle: Double) {
         val cos1=angle
         val b2=other.b
         val cos2=other.angle
-        val x=(b2-b1*Math.cos(cos2)/Math.cos(cos1))/
+        val abscissa=(b2-b1*Math.cos(cos2)/Math.cos(cos1))/
                 (Math.sin(cos1)*Math.cos(cos2)/Math.cos(cos1)-Math.sin(cos2))
-        val y=(x*Math.sin(cos2)+b2)/Math.cos(cos2)
-        return Point(x, y)
+        val ordinate=(abscissa*Math.sin(cos2)+b2)/Math.cos(cos2)
+        return Point(abscissa, ordinate)
     }
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b
@@ -177,8 +177,7 @@ class Line internal constructor(val b: Double, val angle: Double) {
  * Построить прямую по отрезку
  */
 fun lineBySegment(s: Segment): Line {
-    val angle=acos(abs(s.end.x-s.begin.x)/
-            sqrt(sqr(s.end.y-s.begin.y)+sqr(s.end.x-s.begin.x)))
+    val angle=atan2(abs(s.begin.y-s.end.y), abs(s.begin.x-s.end.x))
     val angleBySegment=if (s.end.x>s.begin.x) {
         if (s.end.y>=s.begin.y) angle else PI-angle
     } else
@@ -186,8 +185,7 @@ fun lineBySegment(s: Segment): Line {
     else {
         if (s.end.y>s.begin.y) PI-angle else angle
     }
-    val b=s.begin.y*cos(angleBySegment)-s.begin.x*sin(angleBySegment)
-    return Line(b, angleBySegment)
+    return Line(s.begin, angleBySegment)
 }
 
 /**
@@ -207,22 +205,19 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     val angleBisector= when {
         a.x==b.x -> 0.0
         b.y>a.y -> {
-            val angle=acos((b.x-a.x) /
-                    sqrt(sqr(a.y-b.y)+sqr(a.x-b.x)))
+            val angle=atan2((b.y-a.y), (b.x-a.x))
             if (angle>=PI/2) angle-PI/2
             else angle+PI/2
         }
         b.y<a.y -> {
-            val angle=acos((a.x-b.x) /
-                    sqrt(sqr(a.y-b.y)+sqr(a.x-b.x)))
+            val angle=atan2((a.y-b.y), (a.x-b.x))
             if (angle>=PI/2) angle-PI/2
             else angle+PI/2
         }
         else -> PI/2
     }
-    val midpoint=Point((b.x+a.x)/2, (b.y+a.y)/2)
-    val b1=midpoint.y*cos(angleBisector)-midpoint.x*sin(angleBisector)
-    return Line(b1, angleBisector)
+    val midPoint=Point((b.x+a.x)/2, (b.y+a.y)/2)
+    return Line(midPoint, angleBisector)
 }
 
 /**
@@ -233,12 +228,12 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  */
 fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     if (circles.size<2) throw IllegalArgumentException()
-    var minRange=circles[0].center.distance(circles[1].center)-circles[0].radius-circles[1].radius
+    var minRange=circles[0].distance(circles[1])
     var result=Pair(circles[0], circles[1])
     for (i in 0 until circles.size-1) {
         for (k in i+1 until circles.size) {
             val range=circles[i].center.distance(circles[k].center)-circles[i].radius-circles[k].radius
-            if (range<minRange && range>0) {
+            if (range<minRange && range>=0) {
                 result=Pair(circles[i], circles[k])
                 minRange=range
             }
@@ -276,13 +271,13 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
 fun minContainingCircle(vararg points: Point): Circle {
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size==1) return Circle(points[0], 0.0)
-    var resultListCircle= mutableListOf<Circle>()
+    val resultListCircle=mutableListOf<Circle>()
     for (i in 0 until points.size-1){
         for (g in i+1 until points.size){
             val diameter=points[i].distance(points[g])
-            val midpoint=Point((points[i].x+points[g].x)/2, (points[i].y+points[g].y)/2)
-            var flag=(0 until points.size).all{points[it].distance(midpoint)<=diameter/2}
-            if (flag) resultListCircle.add(Circle(midpoint, diameter/2))
+            val midPoint=Point((points[i].x+points[g].x)/2, (points[i].y+points[g].y)/2)
+            val flag=(0 until points.size).all{points[it].distance(midPoint)<=diameter/2}
+            if (flag) resultListCircle.add(Circle(midPoint, diameter/2))
         }
     }
     if (points.size>2) {
@@ -301,6 +296,5 @@ fun minContainingCircle(vararg points: Point): Circle {
         if (result.radius>element.radius)
             result=element
     }
-    print(result)
     return result
 }

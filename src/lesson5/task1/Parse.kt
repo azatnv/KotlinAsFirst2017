@@ -3,6 +3,7 @@ package lesson5.task1
 
 import sun.misc.Regexp
 import java.util.regex.MatchResult
+import javax.swing.SizeRequirements
 
 /**
  * Пример
@@ -170,12 +171,12 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
+    if (!Regex("""(\d+\s(%|\+|-)[%+-]*(\s|${'$'}))+""").matches(jumps)) return -1
     var parts=jumps.split(" ")
     var result= mutableListOf<Int>()
     try {
         for (i in 0 until parts.size) {
-            if (Regex("""^%|(%*-+)$""").matches(parts[i])) continue
-            else if (Regex("""^%*\+$""").matches(parts[i])) result.add(parts[i-1].toInt())
+            if (Regex("""\+""").containsMatchIn(parts[i])) result.add(parts[i-1].toInt())
         }
     } catch (e: NumberFormatException) {
         return -1
@@ -237,20 +238,35 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть положительными
  */
+fun mostValue(parts1: List<String>, maxElement: Double, result: String): Pair<Double, String>{
+    val product = parts1[0]
+    val value = parts1[1].toDouble()
+    return if (value > maxElement) {
+        Pair(value, product)
+    } else Pair(maxElement, result)
+}
 fun mostExpensive(description: String): String {
-    if (!(description.matches(Regex("""(.*\s\d+(\.\d+)?(;\s|$))+""")))) {
+    if (!(description.matches(Regex("""(.*\s\d+(\.\d+)?(;\s|$|;))+""")))) {
         return ""
     }
-    var parts=description.split("; ")
+    var parts=description.split("; ", ";")
     var maxElement=-1.0
     var result=""
-    for (element in parts) {
-        val parts1=element.split(" ")
-        val product=parts1[0]
-        val value=parts1[1].toDouble()
-        if (value>maxElement) {
-            maxElement=value
-            result=product
+    if (description[description.length-1]==';') {
+        maxElement=parts[parts.size-2].split(" ")[1].toDouble()
+        result=parts[parts.size-2].split(" ")[0]
+        println(maxElement)
+        println(result)
+        for (i in 0 until parts.size-2) {
+            val bestOfTheBest=mostValue(parts[i].split(" "), maxElement, result)
+            result=bestOfTheBest.second
+            maxElement=bestOfTheBest.first
+        }
+    } else {
+        for (element in parts) {
+            val bestOfTheBest=mostValue(element.split(" "), maxElement, result)
+            result=bestOfTheBest.second
+            maxElement=bestOfTheBest.first
         }
     }
     return result
