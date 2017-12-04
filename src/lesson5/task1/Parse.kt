@@ -171,12 +171,12 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!Regex("""(\d+\s(%|\+|-)[%+-]*(\s|${'$'}))+""").matches(jumps)) return -1
     var parts=jumps.split(" ")
     var result= mutableListOf<Int>()
     try {
-        for (i in 0 until parts.size) {
-            if (Regex("""\+""").containsMatchIn(parts[i])) result.add(parts[i-1].toInt())
+        for (i in 0 until parts.size-1 step 2) {
+            if (Regex("""\+""").containsMatchIn(parts[i+1]) &&
+                    Regex("""^\d+$""").matches(parts[i])) result.add(parts[i].toInt())
         }
     } catch (e: NumberFormatException) {
         return -1

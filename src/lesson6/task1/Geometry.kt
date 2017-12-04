@@ -154,9 +154,8 @@ class Line private constructor(val b: Double, val angle: Double) {
         val cos1=angle
         val b2=other.b
         val cos2=other.angle
-        val abscissa=(b2-b1*Math.cos(cos2)/Math.cos(cos1))/
-                (Math.sin(cos1)*Math.cos(cos2)/Math.cos(cos1)-Math.sin(cos2))
-        val ordinate=(abscissa*Math.sin(cos2)+b2)/Math.cos(cos2)
+        val abscissa=(b2*cos(cos1)-b1*cos(cos2))/sin(cos1-cos2)
+        val ordinate=(b2*sin(cos1)-b1*sin(cos2))/sin(cos1-cos2)
         return Point(abscissa, ordinate)
     }
 
@@ -232,7 +231,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     var result=Pair(circles[0], circles[1])
     for (i in 0 until circles.size-1) {
         for (k in i+1 until circles.size) {
-            val range=circles[i].center.distance(circles[k].center)-circles[i].radius-circles[k].radius
+            val range=circles[i].distance(circles[k])
             if (range<minRange && range>=0) {
                 result=Pair(circles[i], circles[k])
                 minRange=range
@@ -252,7 +251,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    val center=bisectorByPoints(a, b).crossPoint(bisectorByPoints(a, c))
+    val center=bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
     val radius=center.distance(a)
     return Circle(center, radius)
 }

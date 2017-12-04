@@ -187,6 +187,13 @@ class Tests {
         val c3 = Circle(Point(-5.0, 0.0), 2.0)
         val c4 = Circle(Point(0.0, 7.0), 3.0)
         val c5 = Circle(Point(0.0, -6.0), 4.0)
+        val c6 = Circle(Point(-1000.0,-632.0), 0.9465811870411348)
+        val c7 = Circle(Point(-999.167395253649, -999.2351707886257), 0.1)
+        val c8 = Circle(Point(-999.3814466861745, -632.0), 0.1)
+        val c9 = Circle(Point(999.2660816084767,-999.0041033765625), 661.6799043859469)
+        val c10 = Circle(Point(999.9807915773531, -999.9656374998997), 0.10000000000000023)
+        val c11 = Circle(Point(-632.0, -1000.0), 0.9440655353405661)
+        assertEquals(Pair(c6, c8), findNearestCirclePair(c6, c7, c8, c9, c10, c11))
         assertEquals(Pair(c1, c5), findNearestCirclePair(c1, c3, c4, c5))
         assertEquals(Pair(c2, c4), findNearestCirclePair(c2, c4, c5))
         assertEquals(Pair(c1, c2), findNearestCirclePair(c1, c2, c4, c5))
@@ -201,6 +208,10 @@ class Tests {
         val result1 = circleByThreePoints(Point(-999.157435302091, -999.4061152894088), Point(-632.0, -632.0), Point(-999.1174266205028, -632.0))
         assertTrue(result1.center.distance(Point(-815.5587133102512, -815.7230484454975)) < 1e-5)
         assertEquals(259.7074503402274, result1.radius, 1e-5)
+        val result2 = circleByThreePoints(Point(-999.1425501543544, -632.0), Point( -999.107274056162, -999.0514743812158), Point(-632.0, -632.0))
+        assertTrue(result2.center.distance(Point(-815.5712750771771, -815.5080964601514)) < 1e-5)
+        assertEquals(259.5643166922004, result2.radius, 1e-5)
+
     }
 
     @Test
