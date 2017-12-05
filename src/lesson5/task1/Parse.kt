@@ -359,3 +359,30 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun colorPeople(people: List<String>): List<String> {
+    var result= mutableListOf<String>()
+    for (i in 0 until people.size-1) {
+        val parts=people[i].split(" ", ": ", ", ").filter{it!=""}
+        val color=people[i].substring(parts[0].length+parts[1].length+parts[2].length+4, people[i].length-1)
+        val colorParts=color.split(", ", " ")
+        var flag=false
+        for (g in i+1 until people.size) {
+            if (color.length==people[g].split(": ")[1].length) {
+                for (element in colorParts) {
+                    if (element !in people[g].split(": ")[1]) {
+                        flag=true
+                        break
+                    }
+                }
+            }
+            if (flag) continue else break
+        }
+        if (flag) {
+            val name=parts[1]
+            val surname=parts[0]
+            result.add("$name $surname -> $color ")
+        }
+    }
+    return result
+}
