@@ -2,6 +2,7 @@
 package lesson5.task1
 
 import sun.misc.Regexp
+import java.lang.Math.abs
 import java.util.regex.MatchResult
 import javax.swing.SizeRequirements
 
@@ -360,28 +361,20 @@ fun fromRoman(roman: String): Int {
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
 
-fun colorPeople(people: List<String>): List<String> {
+
+fun spamUser34(text: String): List<String> {
+    if (!Regex("""^(.*\s[1-9][0-9]?:[0-9]{2}(\n|$))+""").matches(text)) return listOf()
+    var parts=text.split("\n")
     var result= mutableListOf<String>()
-    for (i in 0 until people.size-1) {
-        val parts=people[i].split(" ", ": ", ", ").filter{it!=""}
-        val color=people[i].substring(parts[0].length+parts[1].length+parts[2].length+4, people[i].length-1)
-        val colorParts=color.split(", ", " ")
-        var flag=false
-        for (g in i+1 until people.size) {
-            if (color.length==people[g].split(": ")[1].length) {
-                for (element in colorParts) {
-                    if (element !in people[g].split(": ")[1]) {
-                        flag=true
-                        break
-                    }
-                }
+    for (i in 0 until parts.size-1) {
+        val parts1 = parts[i].split(" ", ":")
+        val minuts1 = parts1[1].toInt() * 60 + parts1[2].toInt()
+        for (g in i+1 until parts.size) {
+            val parts2 = parts[g].split(" ", ":")
+            val minuts2 = parts2[1].toInt() * 60 + parts2[2].toInt()
+            if (parts1[0]==parts2[0] && abs(minuts1-minuts2)<2 && parts1[0] !in result) {
+                result.add(parts1[0])
             }
-            if (flag) continue else break
-        }
-        if (flag) {
-            val name=parts[1]
-            val surname=parts[0]
-            result.add("$name $surname -> $color ")
         }
     }
     return result

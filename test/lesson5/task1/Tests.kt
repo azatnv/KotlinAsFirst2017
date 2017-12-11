@@ -138,7 +138,12 @@ class Tests {
     }
 
     @Test
-    fun colorPeople() {
-        assertEquals(listOf("2 1 -> синий, красный, зеленый", "ААА Еее: апельсин, мандарин, яблоко"), colorPeople(listOf("Еее ААА БББ: апельсин, мандарин, яблоко", "Йцу Фыв Ячс: кен, апр, мит, олд, гшщ", "1 2 3: синий, красный, зеленый", "Йцу Фыв Ячс: кен, апр, мит, олд, гшщ")))
+    fun spamUser34() {
+        assertEquals( listOf<String>(), spamUser34("Nagibator1992 ab:05\nAlesha 9:56\nMasya 11:44"))
+        assertEquals( listOf<String>(), spamUser34("Nagibator1992 11:05 Alesha 9:56\nMasya 11:44"))
+        assertEquals( listOf<String>(), spamUser34("Nagibator1992 10:05\nAlesha 9:56\nMasya 11:44"))
+        assertEquals( listOf<String>(), spamUser34("Nagibator1992 10:05\nAlesha 9:56\nAlesha 9:58\nMasya 11:44"))
+        assertEquals( listOf<String>("Nagibator1992"), spamUser34("Nagibator1992 10:05\nAlesha 9:56\nNagibator1992 10:06\nMasya 11:44"))
+        assertEquals( listOf<String>("Nagibator1992", "Alesha"), spamUser34("Nagibator1992 10:05\nAlesha 9:57\nNagibator1992 10:06\nAlesha 9:56\nNagibator1992 10:06\nMasya 11:44"))
     }
 }
