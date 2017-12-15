@@ -275,16 +275,9 @@ fun minContainingCircle(vararg points: Point): Circle {
         for (g in i+1 until points.size){
             val diameter=points[i].distance(points[g])
             val midPoint=Point((points[i].x+points[g].x)/2, (points[i].y+points[g].y)/2)
-            val rad=diameter/2
-            println("$midPoint, $rad 000000000000000")
             val flag=(0 until points.size).all{points[it].distance(midPoint)-points[it].distance(midPoint)%0.000000000001<=diameter/2}
-            for (k in 0 until points.size) {
-                print(points[k])
-                println(points[k].distance(midPoint)-points[k].distance(midPoint)%0.000000000001)
-            }
             if (flag) {
                 resultListCircle.add(Circle(midPoint, diameter/2))
-                println("$midPoint, $diameter 222222222222")
             }
         }
     }
@@ -296,7 +289,6 @@ fun minContainingCircle(vararg points: Point): Circle {
                     val flag=(0 until points.size).all{points[it].distance(circle.center)<=circle.radius}
                     if (flag) {
                         resultListCircle.add(circle)
-                        println("$circle 333333333333333")
                     }
                 }
             }
