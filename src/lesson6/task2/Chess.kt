@@ -25,7 +25,7 @@ data class Square(val column: Int, val row: Int) {
      */
     fun notation(): String {
         if (row !in 1..8 || column !in 1..8) return ""
-        val column=column.toChar()+'a'.toInt()-1
+        val column='a'+column-1
         return "$column$row"
     }
 }
@@ -157,7 +157,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
         1 -> return listOf(start, end)
         else -> {
             for (i in 1..8) {
-                for (k in 1..8) {
+                for (k in i-1..8) {
                     if (abs(start.row-i)==abs(start.column-k) && abs(end.row-i)==abs(end.column-k)) {
                         intermediate=Square(k, i)
                         break

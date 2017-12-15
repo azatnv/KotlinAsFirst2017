@@ -38,31 +38,57 @@ interface Matrix<E> {
  * height = высота, width = ширина, e = чем заполнить элементы.
  * Бросить исключение IllegalArgumentException, если height или width <= 0.
  */
-fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> = TODO()
+fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> = MatrixImpl(height, width, e)
 
 /**
  * Средняя сложность
  *
  * Реализация интерфейса "матрица"
  */
-class MatrixImpl<E> : Matrix<E> {
-    override val height: Int = TODO()
+class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : Matrix<E> {
 
-    override val width: Int = TODO()
+    private val map = mutableMapOf<Cell, E>()
 
-    override fun get(row: Int, column: Int): E  = TODO()
+    init {
+        require(width > 0 && height > 0)
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                map[Cell(i, j)]=e
+            }
+        }
+    }
 
-    override fun get(cell: Cell): E  = TODO()
+    override fun get(row: Int, column: Int): E =if (row in 0 until height && column in 0 until width)
+        map[Cell(row, column)]!! else throw IndexOutOfBoundsException()
+
+    override fun get(cell: Cell): E  =get(cell.row, cell.column)
 
     override fun set(row: Int, column: Int, value: E) {
-        TODO()
+        if (row in 0 until height && column in 0 until width)
+            map[Cell(row, column)]=value else throw IndexOutOfBoundsException()
     }
 
     override fun set(cell: Cell, value: E) {
-        TODO()
+        set(cell.row, cell.column, value)
     }
 
-    override fun equals(other: Any?) = TODO()
+    override fun equals(other: Any?) =
+            other is MatrixImpl<*> &&
+            height == other.height &&
+            width == other.width
 
-    override fun toString(): String = TODO()
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.append("[")
+        for (row in 0 until height) {
+            sb.append("[")
+            for (column in 0 until width) {
+                sb.append(this[row, column])
+                if (height-1!=column) sb.append(" ")
+            }
+            sb.append("]")
+        }
+        sb.append("]")
+        return "$sb"
+    }
 }
