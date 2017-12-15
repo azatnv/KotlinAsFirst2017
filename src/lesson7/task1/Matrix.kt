@@ -66,4 +66,3 @@ class MatrixImpl<E> : Matrix<E> {
 
     override fun toString(): String = TODO()
 }
-

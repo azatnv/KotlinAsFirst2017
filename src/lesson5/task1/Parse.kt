@@ -176,7 +176,7 @@ fun bestHighJump(jumps: String): Int {
     var result= mutableListOf<Int>()
     try {
         for (i in 0 until parts.size-1 step 2) {
-            if (Regex("""\+""").containsMatchIn(parts[i+1]) &&
+            if (Regex("""^[%-]*\+[%-]*$""").matches(parts[i+1]) &&
                     Regex("""^\d+$""").matches(parts[i])) result.add(parts[i].toInt())
         }
     } catch (e: NumberFormatException) {
@@ -239,35 +239,18 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть положительными
  */
-fun mostValue(parts1: List<String>, maxElement: Double, result: String): Pair<Double, String>{
-    val product = parts1[0]
-    val value = parts1[1].toDouble()
-    return if (value > maxElement) {
-        Pair(value, product)
-    } else Pair(maxElement, result)
-}
+
 fun mostExpensive(description: String): String {
     if (!(description.matches(Regex("""(.*\s\d+(\.\d+)?(;\s|$|;))+""")))) {
         return ""
     }
-    var parts=description.split("; ", ";")
+    var parts=description.split("; ", ";").filter{it!=""}
     var maxElement=-1.0
     var result=""
-    if (description[description.length-1]==';') {
-        maxElement=parts[parts.size-2].split(" ")[1].toDouble()
-        result=parts[parts.size-2].split(" ")[0]
-        println(maxElement)
-        println(result)
-        for (i in 0 until parts.size-2) {
-            val bestOfTheBest=mostValue(parts[i].split(" "), maxElement, result)
-            result=bestOfTheBest.second
-            maxElement=bestOfTheBest.first
-        }
-    } else {
-        for (element in parts) {
-            val bestOfTheBest=mostValue(element.split(" "), maxElement, result)
-            result=bestOfTheBest.second
-            maxElement=bestOfTheBest.first
+    for (element in parts) {
+        if (element.split(" ")[1].toDouble()>maxElement) {
+            result=element.split(" ")[0]
+            maxElement=element.split(" ")[1].toDouble()
         }
     }
     return result
