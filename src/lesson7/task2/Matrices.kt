@@ -80,7 +80,7 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     val result=createMatrix(height, width, 0)
     for (i in 0 until height) {
         for (j in 0 until width) {
-            result[i,j]=listOf(i, j, height-i, width-j).min()!!+1
+            result[i,j]=listOf(i, j, height-i-1, width-j-1).min()!!+1
         }
     }
     return result
@@ -122,6 +122,7 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
             matrix[height2, width2]=count
             height2--
             width2++
+            count--
         }
     }
     return matrix
@@ -138,21 +139,7 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
-    if (matrix.width!=matrix.height) throw IllegalArgumentException()
-    var height=-1
-    var width: Int
-    val result=createMatrix(matrix.width, matrix.width, matrix[0, 0])
-    for (i in 0 until matrix.width) {
-        height++
-        width=matrix.width
-        for (k in 0 until matrix.height) {
-            result[height, width]=matrix[k, i]
-            width--
-        }
-    }
-    return result
-}
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
 
 /**
  * Сложная
