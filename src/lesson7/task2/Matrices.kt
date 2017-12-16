@@ -3,6 +3,7 @@ package lesson7.task2
 
 import lesson7.task1.Matrix
 import lesson7.task1.createMatrix
+import java.lang.Math.abs
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -76,10 +77,10 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  1  1  1  1  1
  */
 fun generateRectangles(height: Int, width: Int): Matrix<Int> {
-    val result = createMatrix(height, width, 0)
+    val result=createMatrix(height, width, 0)
     for (i in 0 until height) {
         for (j in 0 until width) {
-            if (i<=j) result[i,j]=i+1 else result[i,j]=j+1
+            result[i,j]=listOf(i, j, height-i, width-j).min()!!+1
         }
     }
     return result
@@ -98,7 +99,33 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSnake(height: Int, width: Int): Matrix<Int> {
+    val matrix=createMatrix(height, width, 0)
+    var count=1
+    var height2=0
+    var width2=0
+    for (i in 0 until width) {
+        height2=0
+        width2=i
+        while (width2>=0) {
+            matrix[height2, width2]=count
+            width2--
+            height2++
+            count++
+        }
+    }
+    count=height*width
+    for (i in width downTo 0) {
+        height2=height-1
+        width2=i
+        while (width2<width) {
+            matrix[height2, width2]=count
+            height2--
+            width2++
+        }
+    }
+    return matrix
+}
 
 /**
  * Средняя
@@ -111,7 +138,21 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+    if (matrix.width!=matrix.height) throw IllegalArgumentException()
+    var height=-1
+    var width: Int
+    val result=createMatrix(matrix.width, matrix.width, matrix[0, 0])
+    for (i in 0 until matrix.width) {
+        height++
+        width=matrix.width
+        for (k in 0 until matrix.height) {
+            result[height, width]=matrix[k, i]
+            width--
+        }
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -126,7 +167,25 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    if (matrix.width!=matrix.height) return false
+    for (i in 0 until matrix.height) {
+        val list1= mutableListOf<Int>()
+        val list2= mutableListOf<Int>()
+        for (g in 1..matrix.height) {
+            list1.add(g)
+            list2.add(g)
+        }
+        for (k in 0 until matrix.width) {
+            if (matrix[i,k] in list1 && matrix[k,i] in list2) {
+                list1.remove(matrix[i,k])
+                list2.remove(matrix[k,i])
+            }
+        }
+        if (list1.sum()!=0 || list2.sum()!=0) return false
+    }
+    return true
+}
 
 /**
  * Средняя
